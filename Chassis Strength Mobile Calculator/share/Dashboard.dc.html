@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0A1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chassis">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="chassis-calc.js"></script>
+<style>body{margin:0;background:#050b1c;font-family:'Space Grotesk',system-ui,sans-serif;color:#EAF0FF}a{color:#3FD0FF}a:hover{color:#8be4ff}*{box-sizing:border-box}</style>
+</helmet>
+<div style="min-height:100vh;background:radial-gradient(120% 60% at 50% 0%, #0d1b3f 0%, #050b1c 70%);padding:28px clamp(16px,3vw,40px) 48px;display:flex;flex-direction:column;gap:22px">
+  <header style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:1px solid rgba(120,160,255,.16)">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;color:#3FD0FF;text-transform:uppercase">Peer testing build · v0.1</span>
+      {{ creatorMark }}
+      <h1 style="margin:0;font:700 clamp(26px,3vw,36px)/1.1 'Space Grotesk',sans-serif;color:#F4F7FF">Chassis Strength Calculator</h1>
+      <span style="font:400 14px 'Space Grotesk',sans-serif;color:#8FA0C8;max-width:640px;text-wrap:pretty">Heavy vehicle chassis rail bending check — spring, tandem airbag and twin steer.</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <a href="{{ appSrc }}" target="_blank" style="display:flex;align-items:center;height:44px;padding:0 18px;border-radius:12px;background:#3FD0FF;color:#04101f;text-decoration:none;white-space:nowrap;font:700 14px 'Space Grotesk',sans-serif">Open app full screen</a>
+      <a href="{{ reportSrc }}" target="_blank" onClick="{{ openReport }}" style="display:flex;align-items:center;height:44px;padding:0 18px;border-radius:12px;border:1px solid rgba(120,160,255,.3);color:#C9D5F5;text-decoration:none;white-space:nowrap;font:600 14px 'Space Grotesk',sans-serif">Open report</a>
+    </div>
+  </header>
+
+  <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+        <div style="border-radius:16px;background:#0e1b42;border:1px solid rgba(120,160,255,.14);padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+          <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.08em;color:#8FA0C8;text-transform:uppercase">{{ k.label }}</span>
+          <span style="font:700 26px 'JetBrains Mono',monospace;color:{{ k.color }}">{{ k.val }}</span>
+          <span style="font:400 12px 'Space Grotesk',sans-serif;color:#8FA0C8">{{ k.sub }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <div style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start">
+    <section style="flex:0 0 auto;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <span style="font:600 15px 'Space Grotesk',sans-serif;color:#F4F7FF">Live app</span>
+        <span style="font:400 12px 'JetBrains Mono',monospace;color:#8FA0C8">mobile · 390 × 844</span>
+      </div>
+      <div style="width:420px;height:880px;max-width:100%;border-radius:24px;overflow:hidden;background:#050b1c;border:1px solid rgba(120,160,255,.14)">
+        <iframe src="{{ appSrc }}" title="Chassis Strength App" style="width:100%;height:100%;border:0;display:block"></iframe>
+      </div>
+    </section>
+
+    <section style="flex:1 1 480px;min-width:0;display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font:600 15px 'Space Grotesk',sans-serif;color:#F4F7FF">Report preview</span>
+          <button onClick="{{ refresh }}" style="cursor:pointer;height:34px;padding:0 14px;border-radius:10px;border:1px solid rgba(63,208,255,.4);background:transparent;color:#3FD0FF;font:600 12.5px 'Space Grotesk',sans-serif">Refresh from app</button>
+        </div>
+        <div style="position:relative;width:100%;max-width:560px;height:760px;border-radius:16px;overflow:hidden;background:#e9edf5;border:1px solid rgba(120,160,255,.14)">
+          <iframe ref="{{ reportRef }}" src="{{ reportSrc }}" title="Report preview" style="position:absolute;left:0;top:0;width:880px;height:1300px;border:0;transform:scale(.636);transform-origin:0 0"></iframe>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { ready: false };
+  reportRef = React.createRef();
+  componentDidMount() {
+    const boot = () => { if (!window.ChassisCalc) { this._t = setTimeout(boot, 40); return; } this.setState({ ready: true }); };
+    boot();
+    this._onMsg = e => {
+      const m = e.data; if (!m || !m.cc) return;
+      if (m.cc === 'state') { window.__ccState = m.s; clearTimeout(this._r); this._r = setTimeout(() => { this.reloadReport(); this.forceUpdate(); }, 350); }
+      else if (m.cc === 'need' && e.source) { const CC = window.ChassisCalc; e.source.postMessage({ cc: 'state', s: window.__ccState || (CC && CC.load()), print: e.source === this._printWin }, '*'); }
+      else if (m.cc === 'openReport') { window.__ccState = m.s; this._printWin = window.open(this.reportUrl(), '_blank'); }
+    };
+    window.addEventListener('message', this._onMsg);
+  }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._r); window.removeEventListener('message', this._onMsg); }
+  appUrl() { return (window.__resources && window.__resources.appHtml) || 'Chassis Strength App.dc.html'; }
+  reportUrl() { return (window.__resources && window.__resources.reportHtml) || 'Chassis Strength Report.dc.html'; }
+  reloadReport() { const f = this.reportRef.current; if (f) { const u = f.src; f.src = 'about:blank'; setTimeout(() => { f.src = u; }, 30); } }
+  renderVals() {
+    const CC = window.ChassisCalc, s = this.state;
+    const base = { creatorMark: window.ChassisCalc ? React.createElement('span', { 'data-creator-mark': '1', contentEditable: false, suppressContentEditableWarning: true, style: { font: "600 12px 'JetBrains Mono',monospace", color: '#2BEA8A', userSelect: 'none', pointerEvents: 'none' } }, window.ChassisCalc.CREATOR.text) : null, reportRef: this.reportRef, refresh: () => this.reloadReport(), appSrc: this.appUrl(), reportSrc: this.reportUrl(),
+      openReport: e => { if (window.__resources && window.__resources.reportHtml) { e.preventDefault(); this._printWin = null; window.open(this.reportUrl(), '_blank'); } } };
+    if (!s.ready || !CC) return { ...base, ready: false };
+    const fmt = CC.fmt;
+    const sheet = { spring: 114.8, airbag: 131.6, twin: 111.3 };
+    const ok = { c: '#2BEA8A', bg: 'rgba(43,234,138,.10)' }, bad = { c: '#FF4D5E', bg: 'rgba(255,77,94,.10)' };
+    const refs = Object.keys(CC.SAMPLES).map(k => {
+      const sm = CC.SAMPLES[k], r = CC.calc(k, sm.v, sm.fos), st = r.pass ? ok : bad;
+      return { job: sm.job.jobNo, setup: CC.CONFIGS[k].label + ' · ' + sm.job.desc, sheet: fmt(sheet[k], 1), app: fmt(r.stress, 1), allow: fmt(r.allow, 1), status: r.pass ? 'PASS' : 'FAIL', color: st.c, bg: st.bg };
+    });
+    const saved = CC.load();
+    let cur = null;
+    if (saved && saved.data && saved.data[saved.cfg]) { const d = saved.data[saved.cfg]; cur = { cfg: saved.cfg, d, r: CC.calc(saved.cfg, d.v, d.fos) }; }
+    const kpis = cur ? [
+      { label: 'Current job', val: cur.d.job.jobNo || '—', sub: (cur.d.job.customer || 'No customer') + ' · Rev ' + (cur.d.job.rev || '0'), color: '#F4F7FF' },
+      { label: 'Setup', val: CC.CONFIGS[cur.cfg].label, sub: CC.CONFIGS[cur.cfg].title.toLowerCase(), color: '#F4F7FF' },
+      { label: 'Stress @ Bmax', val: fmt(cur.r.stress, 1), sub: 'of ' + fmt(cur.r.allow, 1) + ' MPa allowable · FOS ' + cur.d.fos, color: '#F4F7FF' },
+      { label: 'Result', val: cur.r.pass ? 'PASS' : 'FAIL', sub: fmt(cur.r.util * 100, 0) + '% utilised', color: cur.r.pass ? ok.c : bad.c }
+    ] : [{ label: 'Current job', val: '—', sub: 'Open the app to start a job', color: '#F4F7FF' }];
+    return { ...base, ready: true, refs, kpis };
+  }
+}
+</script>
+</body>
+</html>

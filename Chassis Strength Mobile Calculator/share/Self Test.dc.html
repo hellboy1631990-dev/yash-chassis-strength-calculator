@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0A1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chassis">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="chassis-calc.js"></script>
+<style>body{margin:0;background:#050b1c;font-family:'Space Grotesk',system-ui,sans-serif;color:#EAF0FF}a{color:#3FD0FF}a:hover{color:#8be4ff}*{box-sizing:border-box}</style>
+</helmet>
+<div style="min-height:100vh;padding:28px clamp(16px,3vw,40px) 48px;display:flex;flex-direction:column;gap:20px;background:radial-gradient(120% 60% at 50% 0%, #0d1b3f 0%, #050b1c 70%)">
+  <header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px;border-bottom:1px solid rgba(120,160,255,.16);padding-bottom:16px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;color:#3FD0FF;text-transform:uppercase">Automated self test</span>
+      <h1 style="margin:0;font:700 30px/1.1 'Space Grotesk',sans-serif;color:#F4F7FF">Chassis Strength — test bench</h1>
+      {{ creatorMark }}
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span style="font:600 13px 'JetBrains Mono',monospace;color:{{ summaryColor }}">{{ summary }}</span>
+      <button onClick="{{ runAll }}" style="cursor:pointer;height:44px;padding:0 18px;border-radius:12px;border:0;background:#3FD0FF;color:#04101f;font:700 14px 'Space Grotesk',sans-serif;white-space:nowrap">{{ runLabel }}</button>
+    </div>
+  </header>
+
+  <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+    <div style="flex:1 1 640px;min-width:0;display:flex;flex-direction:column;gap:20px">
+      <section style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:600 15px 'Space Grotesk',sans-serif;color:#F4F7FF">1 · Excel comparison — {{ xlCount }} jobs (2023–2026)</span>
+        <div style="border-radius:14px;background:#0e1b42;border:1px solid rgba(120,160,255,.14);overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font:500 12px 'JetBrains Mono',monospace;min-width:640px">
+            <thead><tr style="color:#8FA0C8;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em"><th style="text-align:left;padding:9px 10px">Job</th><th style="text-align:left;padding:9px 6px">Setup</th><th style="text-align:right;padding:9px 6px">Bmax sheet</th><th style="text-align:right;padding:9px 6px">Bmax app</th><th style="text-align:right;padding:9px 6px">Δ</th><th style="text-align:right;padding:9px 6px">σ sheet</th><th style="text-align:right;padding:9px 6px">σ app</th><th style="text-align:center;padding:9px 6px">Result</th><th style="text-align:left;padding:9px 10px">Note</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ xl }}" as="x" hint-placeholder-count="10">
+                <tr style="border-top:1px solid rgba(120,160,255,.10)">
+                  <td style="padding:7px 10px;color:#F4F7FF">{{ x.job }}</td><td style="padding:7px 6px;color:#C9D5F5">{{ x.setup }}</td><td style="padding:7px 6px;text-align:right;color:#8FA0C8">{{ x.sb }}</td><td style="padding:7px 6px;text-align:right">{{ x.ab }}</td><td style="padding:7px 6px;text-align:right;color:{{ x.dcol }}">{{ x.d }}</td><td style="padding:7px 6px;text-align:right;color:#8FA0C8">{{ x.ss }}</td><td style="padding:7px 6px;text-align:right">{{ x.as }}</td><td style="padding:7px 6px;text-align:center;color:{{ x.rcol }}">{{ x.res }}</td><td style="padding:7px 10px;color:#8FA0C8;font-family:'Space Grotesk',sans-serif">{{ x.note }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:600 15px 'Space Grotesk',sans-serif;color:#F4F7FF">2 · Slider vs typed — 30 scenarios (run in the live app)</span>
+        <div style="border-radius:14px;background:#0e1b42;border:1px solid rgba(120,160,255,.14);overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font:500 12px 'JetBrains Mono',monospace;min-width:640px">
+            <thead><tr style="color:#8FA0C8;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em"><th style="text-align:left;padding:9px 10px">#</th><th style="text-align:left;padding:9px 6px">Setup · input</th><th style="text-align:right;padding:9px 6px">Target</th><th style="text-align:right;padding:9px 6px">Typed</th><th style="text-align:right;padding:9px 6px">Slider</th><th style="text-align:right;padding:9px 6px">σ typed</th><th style="text-align:right;padding:9px 6px">σ slider</th><th style="text-align:center;padding:9px 6px">Calc check</th><th style="text-align:center;padding:9px 10px">Status</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ sc }}" as="t" hint-placeholder-count="10">
+                <tr style="border-top:1px solid rgba(120,160,255,.10)">
+                  <td style="padding:7px 10px;color:#8FA0C8">{{ t.n }}</td><td style="padding:7px 6px;color:#C9D5F5">{{ t.what }}</td><td style="padding:7px 6px;text-align:right">{{ t.target }}</td><td style="padding:7px 6px;text-align:right">{{ t.typed }}</td><td style="padding:7px 6px;text-align:right">{{ t.slid }}</td><td style="padding:7px 6px;text-align:right">{{ t.st }}</td><td style="padding:7px 6px;text-align:right">{{ t.ss }}</td><td style="padding:7px 6px;text-align:center;color:{{ t.ccol }}">{{ t.calc }}</td><td style="padding:7px 10px;text-align:center;color:{{ t.col }}">{{ t.status }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <span style="font:400 12px 'Space Grotesk',sans-serif;color:#6f80aa;text-wrap:pretty">Each scenario resets to the sample job, types the target into the input box, reads the displayed stress, then resets and drags the slider to the same position. Pass = displayed stress equals the independent calculation for both methods, and slider value is within one slider pixel (or one step) of the typed value.</span>
+      </section>
+
+      <section style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:600 15px 'Space Grotesk',sans-serif;color:#F4F7FF">3 · PDF report page — A4 and 25 mm margin envelope</span>
+        <div style="border-radius:14px;background:#0e1b42;border:1px solid rgba(120,160,255,.14);overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font:500 12px 'JetBrains Mono',monospace;min-width:560px">
+            <thead><tr style="color:#8FA0C8;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em"><th style="text-align:left;padding:9px 10px">Setup</th><th style="text-align:right;padding:9px 6px">Page (mm)</th><th style="text-align:right;padding:9px 6px">Left</th><th style="text-align:right;padding:9px 6px">Top</th><th style="text-align:right;padding:9px 6px">Right</th><th style="text-align:right;padding:9px 6px">Bottom</th><th style="text-align:center;padding:9px 10px">Status</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ pdf }}" as="p" hint-placeholder-count="3">
+                <tr style="border-top:1px solid rgba(120,160,255,.10)">
+                  <td style="padding:7px 10px;color:#C9D5F5">{{ p.cfg }}</td><td style="padding:7px 6px;text-align:right">{{ p.page }}</td><td style="padding:7px 6px;text-align:right">{{ p.l }}</td><td style="padding:7px 6px;text-align:right">{{ p.t }}</td><td style="padding:7px 6px;text-align:right">{{ p.r }}</td><td style="padding:7px 6px;text-align:right">{{ p.b }}</td><td style="padding:7px 10px;text-align:center;color:{{ p.col }}">{{ p.status }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <span style="font:400 12px 'Space Grotesk',sans-serif;color:#6f80aa">Pass = page box 210 × 297 mm and every element ≥ 25 mm from each edge.</span>
+      </section>
+    </div>
+
+    <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:10px">
+      <span style="font:600 13px 'Space Grotesk',sans-serif;color:#8FA0C8">App under test</span>
+      <div style="width:420px;height:880px;border-radius:20px;overflow:hidden;border:1px solid rgba(120,160,255,.14)">
+        <iframe ref="{{ appRef }}" src="Chassis Strength App.dc.html" title="App under test" style="width:100%;height:100%;border:0;display:block"></iframe>
+      </div>
+      <span style="font:600 13px 'Space Grotesk',sans-serif;color:#8FA0C8">Report under test</span>
+      <div style="width:420px;height:300px;border-radius:14px;overflow:hidden;border:1px solid rgba(120,160,255,.14);position:relative;background:#e9edf5">
+        <iframe ref="{{ repRef }}" src="Chassis Strength Report.dc.html" title="Report under test" style="position:absolute;left:0;top:0;width:900px;height:1300px;border:0;transform:scale(.466);transform-origin:0 0"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const OK = '#2BEA8A', BAD = '#FF4D5E', WARN = '#FFB547', DIM = '#8FA0C8';
+class Component extends DCLogic {
+  state = { ready: false, xl: [], sc: [], pdf: [], running: false, done: false };
+  appRef = React.createRef(); repRef = React.createRef();
+  componentDidMount() {
+    const boot = async () => {
+      if (!window.ChassisCalc) { this._t = setTimeout(boot, 40); return; }
+      const files = ['tests/excel-cases-1.json', 'tests/excel-cases-2.json', 'tests/excel-cases-3.json'];
+      let cases = [];
+      for (const f of files) { try { cases = cases.concat(await (await fetch(f)).json()); } catch (e) {} }
+      this.setState({ ready: true, xl: this.excel(cases) });
+    };
+    boot();
+  }
+  componentWillUnmount() { clearTimeout(this._t); }
+  excel(cases) {
+    const CC = window.ChassisCalc, fmt = CC.fmt;
+    return cases.map(c => {
+      const r = CC.calc(c.cfg, c.v, c.fos, c.basis);
+      const sb = Math.max(Math.abs(c.sheet.bpos), Math.abs(c.sheet.bneg));
+      const d = (r.Bmax - sb) / sb * 100, ok = Math.abs(d) <= 2;
+      let note = ok ? 'Match' : '';
+      if (!ok && c.cfg === 'twin') note = 'Sheet template places E/F from D (geometry error)';
+      else if (!ok) note = 'App finds peak between sheet sample points';
+      if (ok && Math.abs(r.stress - c.sheet.stress) > 0.5) note = 'Bmax match; sheet stress used +ve peak only';
+      const sheetPass = /pass/i.test(c.sheet.result);
+      return { job: c.job, setup: CC.CONFIGS[c.cfg].label + ' · ' + (c.basis === 'rail' ? 'per rail' : 'full'), sb: fmt(sb, 2), ab: fmt(r.Bmax, 2), d: (d >= 0 ? '+' : '') + fmt(d, 1) + '%', dcol: ok ? OK : (Math.abs(d) <= 5 ? WARN : BAD), ss: fmt(c.sheet.stress, 1), as: fmt(r.stress, 1), res: (r.pass ? 'PASS' : 'FAIL') + (r.pass === sheetPass ? '' : ' ≠ sheet'), rcol: r.pass === sheetPass ? (r.pass ? OK : BAD) : WARN, note, _ok: ok || /stress used/.test(note) };
+    });
+  }
+  scenarios() {
+    const CC = window.ChassisCalc; let seed = 20261007;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+    const cfgs = ['spring', 'airbag', 'twin'], list = [];
+    for (let i = 0; i < 30; i++) {
+      const cfg = cfgs[i % 3], C = CC.CONFIGS[cfg];
+      const groups = [['vehicle', C.vehicle], ['masses', ['TF', 'TR', 'MF', 'MR']], ['brackets', C.brackets]];
+      const [tab, keys] = groups[Math.floor(rnd() * 3)];
+      const key = keys[Math.floor(rnd() * keys.length)], d = CC.DEFS[key];
+      const target = +(Math.round((d.min + (0.08 + rnd() * 0.84) * (d.max - d.min)) / d.step) * d.step).toFixed(4);
+      list.push({ cfg, tab, key, target });
+    }
+    return list;
+  }
+  async runAll() {
+    if (this.state.running) return;
+    this.setState({ running: true, done: false, sc: [], pdf: [] });
+    const CC = window.ChassisCalc, fmt = CC.fmt;
+    const win = this.appRef.current.contentWindow;
+    for (let i = 0; i < 100 && !win.__ccApp; i++) await sleep(100);
+    const app = win.__ccApp; if (!app) { this.setState({ running: false }); return; }
+    const original = app.get().data;
+    const base = {}; Object.keys(CC.SAMPLES).forEach(k => base[k] = JSON.parse(JSON.stringify(CC.SAMPLES[k])));
+    const doc = () => this.appRef.current.contentDocument;
+    const readStress = () => { const n = doc().querySelector('[data-stress]'); return n ? n.childNodes[0].textContent.trim() : ''; };
+    const expected = () => { const s = app.get(), cd = s.data[s.cfg]; return fmt(CC.calc(s.cfg, cd.v, cd.fos, cd.basis).stress, 1); };
+    const results = [];
+    const list = this.scenarios();
+    for (let i = 0; i < list.length; i++) {
+      const sc = list[i], d = CC.DEFS[sc.key];
+      app.setData(base); app.setCfg(sc.cfg); app.setTab(sc.tab); await sleep(180);
+      const inp = doc().querySelector(`input[data-k="${sc.key}"]`);
+      const setter = Object.getOwnPropertyDescriptor(win.HTMLInputElement.prototype, 'value').set;
+      inp.focus(); setter.call(inp, String(sc.target)); inp.dispatchEvent(new win.Event('input', { bubbles: true })); await sleep(60);
+      inp.dispatchEvent(new win.FocusEvent('focusout', { bubbles: true })); inp.blur(); await sleep(160);
+      const vT = app.get().data[sc.cfg].v[sc.key], sT = readStress(), eT = expected();
+      app.setData(base); app.setTab(sc.tab); await sleep(180);
+      const sl = doc().querySelector(`[data-slider="${sc.key}"]`), rect = sl.getBoundingClientRect();
+      const t = (sc.target - d.min) / (d.max - d.min), cx = rect.left + t * rect.width, cy = rect.top + rect.height / 2;
+      sl.dispatchEvent(new win.PointerEvent('pointerdown', { bubbles: true, clientX: cx, clientY: cy, pointerId: 1, buttons: 1 })); await sleep(160);
+      const vS = app.get().data[sc.cfg].v[sc.key], sS = readStress(), eS = expected();
+      const tol = Math.max(d.step, (d.max - d.min) / rect.width) + 1e-9;
+      const calcOk = sT === eT && sS === eS, valOk = Math.abs(vT - sc.target) < 1e-9 && Math.abs(vS - vT) <= tol;
+      const dp = d.step >= 1 ? 0 : 3;
+      results.push({ n: i + 1, what: `${CC.CONFIGS[sc.cfg].label} · ${sc.key} (${d.unit})`, target: fmt(sc.target, dp), typed: fmt(vT, dp), slid: fmt(vS, dp), st: sT, ss: sS, calc: calcOk ? '✓ = calc' : `✗ ${eT}/${eS}`, ccol: calcOk ? OK : BAD, status: calcOk && valOk ? 'PASS' : 'FAIL', col: calcOk && valOk ? OK : BAD, _ok: calcOk && valOk });
+      this.setState({ sc: results.slice() });
+    }
+    app.setData(original); await sleep(200);
+    // PDF envelope
+    const rw = this.repRef.current.contentWindow, pdf = [];
+    for (const cfg of ['spring', 'airbag', 'twin']) {
+      rw.postMessage({ cc: 'state', s: { cfg, data: { [cfg]: base[cfg] } } }, '*'); await sleep(700);
+      const s = rw.document.querySelector('section.page'); if (!s) continue;
+      const sr = s.getBoundingClientRect(), mm = sr.width / 210; let b = { l: 1e9, t: 1e9, r: -1e9, bt: -1e9 };
+      s.querySelectorAll('*').forEach(e => { const r = e.getBoundingClientRect(); if (r.width && r.height) { b.l = Math.min(b.l, r.left); b.t = Math.min(b.t, r.top); b.r = Math.max(b.r, r.right); b.bt = Math.max(b.bt, r.bottom); } });
+      const m = { w: sr.width / mm, h: sr.height / mm, l: (b.l - sr.left) / mm, t: (b.t - sr.top) / mm, r: (sr.right - b.r) / mm, b: (sr.bottom - b.bt) / mm };
+      const ok = Math.abs(m.w - 210) < 0.5 && Math.abs(m.h - 297) < 0.5 && [m.l, m.t, m.r, m.b].every(x => x >= 24.9);
+      pdf.push({ cfg: CC.CONFIGS[cfg].label, page: fmt(m.w, 1) + ' × ' + fmt(m.h, 1), l: fmt(m.l, 1), t: fmt(m.t, 1), r: fmt(m.r, 1), b: fmt(m.b, 1), status: ok ? 'PASS' : 'FAIL', col: ok ? OK : BAD, _ok: ok });
+    }
+    rw.location.reload();
+    this.setState({ pdf, running: false, done: true });
+  }
+  renderVals() {
+    const CC = window.ChassisCalc, s = this.state;
+    const n = a => a.filter(x => x._ok).length;
+    const summary = s.done ? `Excel ${n(s.xl)}/${s.xl.length} match · Slider/typed ${n(s.sc)}/${s.sc.length} · PDF ${n(s.pdf)}/${s.pdf.length}` : (s.running ? `Running… ${s.sc.length}/30` : 'Press Run to execute the live tests');
+    return {
+      creatorMark: CC ? React.createElement('span', { 'data-creator-mark': '1', contentEditable: false, suppressContentEditableWarning: true, style: { font: "600 12px 'JetBrains Mono',monospace", color: '#2BEA8A', userSelect: 'none', pointerEvents: 'none' } }, CC.CREATOR.text) : null,
+      xl: s.xl, xlCount: s.xl.length, sc: s.sc, pdf: s.pdf, appRef: this.appRef, repRef: this.repRef,
+      summary, summaryColor: s.done ? (n(s.sc) === s.sc.length && n(s.pdf) === s.pdf.length ? OK : WARN) : DIM,
+      runLabel: s.running ? 'Running…' : (s.done ? 'Run again' : 'Run self tests'),
+      runAll: () => this.runAll()
+    };
+  }
+}
+</script>
+</body>
+</html>

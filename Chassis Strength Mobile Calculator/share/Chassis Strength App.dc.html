@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<template id="__bundler_thumbnail" data-bg-color="#0A1430"><svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#0A1430"/><rect x="120" y="120" width="160" height="160" rx="32" fill="none" stroke="#3FD0FF" stroke-width="12"/><text x="200" y="228" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="72" fill="#2BEA8A">CS</text></svg></template>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0A1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chassis">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="chassis-calc.js"></script>
+<style>body{margin:0;background:#050b1c;font-family:'Space Grotesk',system-ui,sans-serif;color:#EAF0FF}a{color:#3FD0FF}a:hover{color:#8be4ff}input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.8)}*{box-sizing:border-box}::-webkit-scrollbar{display:none}</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;background:radial-gradient(120% 80% at 50% 0%, #0d1b3f 0%, #050b1c 70%)">
+  <div style="width:390px;height:844px;border-radius:52px;background:#020615;padding:10px;box-shadow:0 0 0 2px #1b2a55, 0 40px 120px rgba(0,0,0,.6)">
+    <div style="position:relative;width:100%;height:100%;border-radius:43px;overflow:hidden;background:#0A1430;display:flex;flex-direction:column">
+      <div style="height:48px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px;font:600 15px 'Space Grotesk',sans-serif;color:#EAF0FF">
+        <span>9:41</span>
+        <div style="width:110px;height:30px;border-radius:20px;background:#000;position:absolute;left:50%;top:10px;transform:translateX(-50%)"></div>
+        <span style="font:500 12px 'JetBrains Mono',monospace;color:#8FA0C8">5G ▮▮▮</span>
+      </div>
+      <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:4px 18px 132px;scrollbar-width:none">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 2px 14px">
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:0">
+            <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;color:#3FD0FF;text-transform:uppercase">Job {{ jobNo }} · Rev {{ rev }}</span>
+            <span style="font:700 24px/1.1 'Space Grotesk',sans-serif;color:#F4F7FF;letter-spacing:-.01em">Chassis Strength</span>
+            {{ creatorMark }}
+          </div>
+          <div style="flex:none;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font:700 12px 'JetBrains Mono',monospace;letter-spacing:.08em;background:{{ statusBg }};color:{{ statusColor }};border:1px solid {{ statusColor }}">
+            <span style="width:7px;height:7px;border-radius:50%;background:{{ statusColor }};box-shadow:0 0 10px {{ statusColor }}"></span>{{ statusText }}
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:#071027;border:1px solid rgba(120,160,255,.14);margin-bottom:14px">
+          <sc-for list="{{ configs }}" as="c" hint-placeholder-count="3">
+            <button onClick="{{ c.pick }}" style="border:0;cursor:pointer;padding:9px 4px;border-radius:10px;font:600 12.5px 'Space Grotesk',sans-serif;background:{{ c.bg }};color:{{ c.fg }};display:flex;flex-direction:column;align-items:center;gap:2px">
+              <span style="white-space:nowrap;font-size:12px">{{ c.label }}</span><span style="font:400 9.5px 'JetBrains Mono',monospace;opacity:.75;white-space:nowrap">{{ c.sub }}</span>
+            </button>
+          </sc-for>
+        </div>
+
+        <div style="border-radius:20px;background:linear-gradient(180deg,#112152 0%,#0d1a40 100%);border:1px solid rgba(120,160,255,.16);padding:12px 12px 10px;margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0 4px 4px">
+            <span style="font:600 12px 'Space Grotesk',sans-serif;color:#C9D5F5">Side elevation</span>
+            <span style="font:500 10px 'JetBrains Mono',monospace;color:#8FA0C8;white-space:nowrap">L = {{ lenStr }} m · w = {{ wStr }} kN/m</span>
+          </div>
+          <svg viewBox="{{ el.vb }}" style="width:100%;display:block">
+            <line x1="{{ el.gx1 }}" x2="{{ el.gx2 }}" y1="{{ el.ground }}" y2="{{ el.ground }}" stroke="rgba(143,160,200,.35)" stroke-width="1"></line>
+            <rect x="{{ el.body.x }}" y="{{ el.body.y }}" width="{{ el.body.w }}" height="{{ el.body.h }}" rx="2" fill="rgba(255,181,71,.08)" stroke="#FFB547" stroke-width="1.1" stroke-dasharray="5 3"></rect>
+            <sc-for list="{{ el.arrows }}" as="a" hint-placeholder-count="0">
+              <path d="{{ a.d }}" stroke="#FFB547" stroke-width="1"></path>
+              <polygon points="{{ a.head }}" fill="#FFB547"></polygon>
+            </sc-for>
+            
+            <rect x="{{ el.subframe.x }}" y="{{ el.subframe.y }}" width="{{ el.subframe.w }}" height="{{ el.subframe.h }}" fill="#2a4a8a"></rect>
+            <sc-for list="{{ el.tanks }}" as="tk" hint-placeholder-count="0">
+              <rect x="{{ tk.x }}" y="{{ tk.y }}" width="{{ tk.w }}" height="{{ tk.h }}" rx="{{ tk.rx }}" fill="#22356a" stroke="#5a6fa3" stroke-width="1"></rect>
+              <line x1="{{ tk.band1 }}" x2="{{ tk.band1 }}" y1="{{ tk.y1 }}" y2="{{ tk.y2 }}" stroke="#5a6fa3" stroke-width="1.4"></line>
+              <line x1="{{ tk.band2 }}" x2="{{ tk.band2 }}" y1="{{ tk.y1 }}" y2="{{ tk.y2 }}" stroke="#5a6fa3" stroke-width="1.4"></line>
+            </sc-for>
+            <rect x="{{ el.rail.x }}" y="{{ el.rail.y }}" width="{{ el.rail.w }}" height="{{ el.rail.h }}" fill="#3FD0FF"></rect>
+            <path d="{{ el.underrun }}" fill="none" stroke="#8FA0C8" stroke-width="2.4" stroke-linecap="round"></path>
+            <sc-for list="{{ el.brackets }}" as="b" hint-placeholder-count="0">
+              <line x1="{{ b.lx }}" x2="{{ b.lx }}" y1="{{ b.ly1 }}" y2="{{ b.ly2 }}" stroke="#7CF5FF" stroke-width="0.8" stroke-dasharray="2 2"></line>
+              <rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" fill="#7CF5FF"></rect>
+              
+            </sc-for>
+            <sc-for list="{{ el.guards }}" as="g" hint-placeholder-count="0">
+              <path d="{{ g }}" fill="none" stroke="#5a6fa3" stroke-width="2.6" stroke-linejoin="round"></path>
+            </sc-for>
+            <sc-for list="{{ el.wheels }}" as="w" hint-placeholder-count="0">
+              <circle cx="{{ w.cx }}" cy="{{ w.cy }}" r="{{ w.rt }}" fill="#050b1c" stroke="#3a4c80" stroke-width="1.2"></circle>
+              <circle cx="{{ w.cx }}" cy="{{ w.cy }}" r="{{ w.rr }}" fill="#2a3a68" stroke="#8FA0C8" stroke-width="1"></circle>
+              <circle cx="{{ w.cx }}" cy="{{ w.cy }}" r="{{ w.rh }}" fill="#C9D5F5"></circle>
+            </sc-for>
+            <rect x="{{ el.bumper.x }}" y="{{ el.bumper.y }}" width="{{ el.bumper.w }}" height="{{ el.bumper.h }}" rx="2" fill="#2a3a68"></rect>
+            <path d="{{ el.cab }}" fill="#1a2c5e" stroke="#9ab8ff" stroke-width="1.2" stroke-linejoin="round"></path>
+            <path d="{{ el.door }}" fill="none" stroke="#9ab8ff" stroke-width="0.8" opacity=".7"></path>
+            <path d="{{ el.win }}" fill="#0a1a3c" stroke="#9ab8ff" stroke-width="0.8"></path>
+            <path d="{{ el.screen }}" stroke="#3FD0FF" stroke-width="3" stroke-linecap="round"></path>
+            <path d="{{ el.beltLine }}" stroke="#9ab8ff" stroke-width="0.7" opacity=".5"></path>
+            <rect x="{{ el.handle.x }}" y="{{ el.handle.y }}" width="{{ el.handle.w }}" height="{{ el.handle.h }}" fill="#9ab8ff"></rect>
+            <rect x="{{ el.lamp.x }}" y="{{ el.lamp.y }}" width="{{ el.lamp.w }}" height="{{ el.lamp.h }}" rx="1" fill="#FFE27A"></rect>
+            <path d="{{ el.mirror }}" stroke="#8FA0C8" stroke-width="1.6"></path>
+            <rect x="{{ el.mirrorHead.x }}" y="{{ el.mirrorHead.y }}" width="{{ el.mirrorHead.w }}" height="{{ el.mirrorHead.h }}" rx="1.5" fill="#8FA0C8"></rect>
+            <sc-for list="{{ el.steps }}" as="st" hint-placeholder-count="0">
+              <rect x="{{ st.x }}" y="{{ st.y }}" width="{{ st.w }}" height="{{ st.h }}" fill="#8FA0C8"></rect>
+            </sc-for>
+            <line x1="{{ el.bmX }}" x2="{{ el.bmX }}" y1="{{ el.bmY1 }}" y2="{{ el.bmY2 }}" stroke="{{ statusColor }}" stroke-width="1.2" stroke-dasharray="3 3"></line>
+            {{ svgLabels }}
+            <text x="{{ el.bmX }}" y="{{ el.bmY1 }}" dy="-3" text-anchor="middle" fill="{{ statusColor }}" style="font:700 8px 'JetBrains Mono',monospace">Bmax</text>
+            </svg>
+          <div style="height:1px;background:rgba(120,160,255,.14);margin:4px 2px 8px"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:0 4px 2px;gap:8px">
+            <div style="display:flex;gap:4px;padding:3px;border-radius:9px;background:#071027">
+              <button onClick="{{ showBM }}" style="border:0;cursor:pointer;padding:5px 10px;border-radius:7px;font:600 11px 'Space Grotesk',sans-serif;background:{{ bmBtnBg }};color:{{ bmBtnFg }}">Bending</button>
+              <button onClick="{{ showSF }}" style="border:0;cursor:pointer;padding:5px 10px;border-radius:7px;font:600 11px 'Space Grotesk',sans-serif;background:{{ sfBtnBg }};color:{{ sfBtnFg }}">Shear</button>
+            </div>
+            <span style="font:500 10px 'JetBrains Mono',monospace;color:#C9D5F5;white-space:nowrap">{{ chartPeak }}</span>
+          </div>
+          <svg viewBox="0 0 350 120" style="width:100%;display:block">
+            <line x1="15" x2="335" y1="{{ ch.zero }}" y2="{{ ch.zero }}" stroke="rgba(143,160,200,.4)" stroke-width="1"></line>
+            <polygon points="{{ ch.area }}" fill="{{ chFill }}"></polygon>
+            <polyline points="{{ ch.line }}" fill="none" stroke="{{ chStroke }}" stroke-width="2" stroke-linejoin="round"></polyline>
+            <circle cx="{{ ch.px }}" cy="{{ ch.py }}" r="4" fill="{{ chStroke }}" stroke="#0A1430" stroke-width="1.5"></circle>
+          </svg>
+          <span style="display:block;padding:0 4px;font:400 10px 'JetBrains Mono',monospace;color:#6f80aa">M at end of chassis fixed to 0</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:3px;padding:4px;border-radius:14px;background:#071027;border:1px solid rgba(120,160,255,.14);margin-bottom:12px;position:sticky;top:0;z-index:2">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+            <button onClick="{{ t.pick }}" style="border:0;cursor:pointer;padding:9px 0;border-radius:10px;font:600 11.5px 'Space Grotesk',sans-serif;background:{{ t.bg }};color:{{ t.fg }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ isJobTab }}" hint-placeholder-val="{{ false }}">
+          <div style="border-radius:16px;background:#101E44;border:1px solid rgba(120,160,255,.12);padding:6px 14px">
+            <sc-for list="{{ jobFields }}" as="jf" hint-placeholder-count="9">
+              <label style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(120,160,255,.10)">
+                <span style="flex:1;min-width:0;font:500 13px 'Space Grotesk',sans-serif;color:#C9D5F5">{{ jf.label }}</span>
+                <input type="{{ jf.type }}" value="{{ jf.value }}" onChange="{{ jf.onChange }}" placeholder="{{ jf.ph }}" style="width:170px;height:36px;background:#071027;border:1px solid rgba(63,208,255,.35);border-radius:10px;outline:none;color:#F4F7FF;font:600 13.5px 'JetBrains Mono',monospace;padding:0 10px;text-align:right"></input>
+              </label>
+            </sc-for>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0 8px">
+              <span style="font:400 11.5px 'Space Grotesk',sans-serif;color:#8FA0C8;text-wrap:pretty">Job details print on the PDF report header.</span>
+              <button onClick="{{ loadSample }}" style="flex:none;cursor:pointer;border:1px solid rgba(120,160,255,.25);background:transparent;color:#C9D5F5;border-radius:10px;padding:7px 10px;font:600 11.5px 'Space Grotesk',sans-serif">Reset to sample</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isInputTab }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ rows }}" as="row" hint-placeholder-count="5">
+              <div style="border-radius:16px;background:#101E44;border:1px solid rgba(120,160,255,.12);padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="flex:none;min-width:34px;text-align:center;padding:3px 6px;border-radius:6px;background:rgba(63,208,255,.12);color:#3FD0FF;font:700 10.5px 'JetBrains Mono',monospace">{{ row.code }}</span>
+                  <span style="flex:1;min-width:0;font:500 13px/1.25 'Space Grotesk',sans-serif;color:#DCE4FA;text-wrap:pretty">{{ row.label }}</span>
+                  <div style="flex:none;display:flex;align-items:center;gap:6px;background:#071027;border:1px solid rgba(63,208,255,.35);border-radius:10px;padding:0 4px 0 10px;height:36px">
+                    <input type="number" data-k="{{ row.key }}" value="{{ row.display }}" step="{{ row.step }}" onChange="{{ row.onInput }}" onBlur="{{ row.onBlur }}" style="width:62px;background:transparent;border:0;outline:none;color:#F4F7FF;font:600 14px 'JetBrains Mono',monospace;text-align:right;padding:0"></input>
+                    <span style="font:500 11px 'JetBrains Mono',monospace;color:#8FA0C8;min-width:28px">{{ row.unit }}</span>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <button onClick="{{ row.dec }}" style="flex:none;width:30px;height:30px;border-radius:9px;border:1px solid rgba(120,160,255,.2);background:#0A1430;color:#C9D5F5;font:600 16px 'JetBrains Mono',monospace;cursor:pointer">−</button>
+                  <div data-slider="{{ row.key }}" onPointerDown="{{ row.onDown }}" onPointerMove="{{ row.onMove }}" style="flex:1;height:30px;position:relative;cursor:pointer;touch-action:none;display:flex;align-items:center">
+                    <div style="position:absolute;left:0;right:0;height:6px;border-radius:3px;background:#1d2d5c"></div>
+                    <div style="position:absolute;left:0;height:6px;border-radius:3px;width:{{ row.pct }};background:linear-gradient(90deg,#2a7bff,#3FD0FF);box-shadow:0 0 12px rgba(63,208,255,.55)"></div>
+                    <div style="position:absolute;left:{{ row.pct }};width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#F4F7FF;border:4px solid #3FD0FF;box-shadow:0 0 0 5px rgba(63,208,255,.18)"></div>
+                  </div>
+                  <button onClick="{{ row.inc }}" style="flex:none;width:30px;height:30px;border-radius:9px;border:1px solid rgba(120,160,255,.2);background:#0A1430;color:#C9D5F5;font:600 16px 'JetBrains Mono',monospace;cursor:pointer">+</button>
+                </div>
+                <div style="display:flex;justify-content:space-between;font:400 10px 'JetBrains Mono',monospace;color:#6f80aa;margin-top:-4px;padding:0 40px">
+                  <span>{{ row.minStr }}</span><span>{{ row.maxStr }}</span>
+                </div>
+              </div>
+            </sc-for>
+
+            <sc-if value="{{ showFos }}" hint-placeholder-val="{{ false }}">
+              <div style="border-radius:16px;background:#101E44;border:1px solid rgba(120,160,255,.12);padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;margin-bottom:10px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="flex:none;min-width:34px;text-align:center;padding:3px 6px;border-radius:6px;background:rgba(63,208,255,.12);color:#3FD0FF;font:700 10.5px 'JetBrains Mono',monospace">Z</span>
+                  <span style="flex:1;font:500 13px 'Space Grotesk',sans-serif;color:#DCE4FA">Section modulus basis</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                  <sc-for list="{{ basisOpts }}" as="bo" hint-placeholder-count="2">
+                    <button onClick="{{ bo.pick }}" style="cursor:pointer;padding:9px 4px;border-radius:10px;border:1px solid {{ bo.border }};background:{{ bo.bg }};color:{{ bo.fg }};display:flex;flex-direction:column;align-items:center;gap:2px">
+                      <span style="font:700 13px 'Space Grotesk',sans-serif">{{ bo.label }}</span>
+                      <span style="font:500 10px 'JetBrains Mono',monospace;opacity:.8">{{ bo.sub }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="border-radius:16px;background:#101E44;border:1px solid rgba(120,160,255,.12);padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <span style="flex:none;min-width:34px;text-align:center;padding:3px 6px;border-radius:6px;background:rgba(63,208,255,.12);color:#3FD0FF;font:700 10.5px 'JetBrains Mono',monospace">FOS</span>
+                  <span style="flex:1;font:500 13px 'Space Grotesk',sans-serif;color:#DCE4FA">Factor of safety</span>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+                  <sc-for list="{{ fosOpts }}" as="f" hint-placeholder-count="3">
+                    <button onClick="{{ f.pick }}" style="cursor:pointer;padding:9px 4px;border-radius:10px;border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.fg }};display:flex;flex-direction:column;align-items:center;gap:2px">
+                      <span style="font:700 16px 'JetBrains Mono',monospace">{{ f.n }}</span>
+                      <span style="font:500 10px 'Space Grotesk',sans-serif;opacity:.8">{{ f.label }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showDerived }}" hint-placeholder-val="{{ false }}">
+              <div style="border-radius:16px;border:1px dashed rgba(255,181,71,.4);padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px 14px">
+                <sc-for list="{{ derived }}" as="dv" hint-placeholder-count="4">
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <span style="font:500 10.5px 'JetBrains Mono',monospace;color:#FFB547">{{ dv.code }}</span>
+                    <span style="font:600 16px 'JetBrains Mono',monospace;color:#F4F7FF">{{ dv.val }}</span>
+                    <span style="font:400 11px 'Space Grotesk',sans-serif;color:#8FA0C8">{{ dv.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isResultTab }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="border-radius:20px;padding:18px 16px 16px;background:{{ statusBg }};border:1.5px solid {{ statusColor }};display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 0 40px {{ statusGlow }}">
+              <svg viewBox="0 0 220 124" style="width:220px;display:block">
+                <path d="M 20 112 A 90 90 0 0 1 200 112" fill="none" stroke="#1d2d5c" stroke-width="14" stroke-linecap="round"></path>
+                <path d="M 20 112 A 90 90 0 0 1 200 112" fill="none" stroke="{{ statusColor }}" stroke-width="14" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ gaugeDash }}"></path>
+                {{ gaugeLabels }}
+                
+                
+              </svg>
+              <span style="font:700 44px/1 'Space Grotesk',sans-serif;letter-spacing:.06em;color:{{ statusColor }}">{{ statusText }}</span>
+              <span style="font:500 12.5px 'Space Grotesk',sans-serif;color:#C9D5F5;text-align:center;text-wrap:pretty">{{ verdictLine }}</span>
+            </div>
+            <a href="Chassis Strength Report.dc.html" target="_blank" onClick="{{ saveNow }}" style="display:flex;align-items:center;justify-content:center;gap:10px;height:52px;border-radius:16px;background:#F4F7FF;color:#0A1430;text-decoration:none;font:700 15px 'Space Grotesk',sans-serif">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A1430" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path><path d="M12 12v6"></path><path d="M9 15l3 3 3-3"></path></svg>
+              Generate PDF report
+            </a>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <sc-for list="{{ stats }}" as="s" hint-placeholder-count="6">
+                <div style="border-radius:14px;background:#101E44;border:1px solid rgba(120,160,255,.12);padding:11px 12px;display:flex;flex-direction:column;gap:3px">
+                  <span style="font:400 11px 'Space Grotesk',sans-serif;color:#8FA0C8">{{ s.label }}</span>
+                  <span style="font:600 17px 'JetBrains Mono',monospace;color:#F4F7FF">{{ s.val }}<span style="font:400 11px 'JetBrains Mono',monospace;color:#8FA0C8"> {{ s.unit }}</span></span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="border-radius:16px;background:#101E44;border:1px solid rgba(120,160,255,.12);padding:6px 14px">
+              <div style="display:flex;justify-content:space-between;padding:8px 0;font:600 11px 'JetBrains Mono',monospace;color:#3FD0FF;letter-spacing:.08em;text-transform:uppercase"><span>Bracket reactions</span><span>kN · from front</span></div>
+              <sc-for list="{{ reactRows }}" as="r" hint-placeholder-count="4">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid rgba(120,160,255,.10);font:500 13px 'JetBrains Mono',monospace;color:#DCE4FA">
+                  <span style="color:#7CF5FF;font-weight:700;width:28px">{{ r.id }}</span><span style="flex:1;color:#8FA0C8">@ {{ r.x }} m</span><span>{{ r.kn }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="position:absolute;left:10px;right:10px;bottom:10px;border-radius:30px;padding:12px 14px 22px;background:rgba(7,16,39,.94);backdrop-filter:blur(14px);border:1px solid rgba(120,160,255,.18);display:flex;flex-direction:column;gap:9px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+            <span style="font:500 10.5px 'JetBrains Mono',monospace;color:#8FA0C8;letter-spacing:.06em">STRESS @ Bmax</span>
+            <span data-stress="1" style="font:700 20px 'JetBrains Mono',monospace;color:#F4F7FF">{{ stressStr }}<span style="font:500 12px 'JetBrains Mono',monospace;color:#8FA0C8"> / {{ allowStr }} MPa</span></span>
+          </div>
+          <button onClick="{{ goResult }}" style="flex:none;cursor:pointer;border:0;border-radius:16px;padding:0 20px;height:48px;font:700 18px 'Space Grotesk',sans-serif;letter-spacing:.08em;background:{{ statusColor }};color:#04101f;box-shadow:0 0 24px {{ statusGlow }}">{{ statusText }}</button>
+        </div>
+        <div style="height:6px;border-radius:3px;background:#1d2d5c;overflow:hidden">
+          <div style="height:100%;border-radius:3px;width:{{ utilPct }};background:{{ statusColor }}"></div>
+        </div>
+        <div style="width:120px;height:4px;border-radius:2px;background:#C9D5F5;opacity:.5;align-self:center;margin-top:4px"></div>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultConfig&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;spring&quot;,&quot;airbag&quot;,&quot;twin&quot;],&quot;default&quot;:&quot;spring&quot;,&quot;tsType&quot;:&quot;'spring'|'airbag'|'twin'&quot;}}">
+const dec = s => s >= 1 ? 0 : s >= 0.1 ? 1 : s >= 0.01 ? 2 : 3;
+const STATUS = { pass: { c: '#2BEA8A', bg: 'rgba(43,234,138,.10)', glow: 'rgba(43,234,138,.35)' }, fail: { c: '#FF4D5E', bg: 'rgba(255,77,94,.10)', glow: 'rgba(255,77,94,.4)' } };
+const clone = o => JSON.parse(JSON.stringify(o));
+
+class Component extends DCLogic {
+  state = { ready: false, cfg: 'spring', tab: 'vehicle', chart: 'bm', drafts: {}, data: null };
+  componentDidMount() {
+    const boot = () => {
+      const CC = window.ChassisCalc;
+      if (!CC) { this._t = setTimeout(boot, 40); return; }
+      const saved = CC.load();
+      const data = {};
+      Object.keys(CC.SAMPLES).forEach(k => { data[k] = (saved && saved.data && saved.data[k]) || clone(CC.SAMPLES[k]); });
+      this.setState({ ready: true, data, cfg: (saved && saved.cfg) || this.props.defaultConfig || 'spring' });
+      window.__ccApp = {
+        get: () => JSON.parse(JSON.stringify({ cfg: this.state.cfg, tab: this.state.tab, data: this.state.data })),
+        setCfg: k => this.setState({ cfg: k, drafts: {} }),
+        setTab: t => this.setState({ tab: t, drafts: {} }),
+        setData: d => this.setState({ data: JSON.parse(JSON.stringify(d)), drafts: {} }),
+        stressText: () => { const n = document.querySelector('[data-stress]'); return n ? n.textContent : null; }
+      };
+    };
+    boot();
+  }
+  componentWillUnmount() { clearTimeout(this._t); }
+  componentDidUpdate() {
+    if (!this.state.ready) return;
+    window.ChassisCalc.save({ cfg: this.state.cfg, data: this.state.data });
+  }
+  patch(fn) { this.setState(s => { const data = clone(s.data); fn(data[s.cfg]); return { data }; }); }
+  setVal(k, v) {
+    const d = window.ChassisCalc.DEFS[k];
+    v = Math.min(d.max, Math.max(d.min, Math.round(v / d.step) * d.step));
+    v = +v.toFixed(4);
+    this.patch(c => { c.v[k] = v; });
+  }
+  renderVals() {
+    const CC = window.ChassisCalc, s = this.state;
+    if (!s.ready || !CC) return { ready: false };
+    const fmt = CC.fmt, cfg = s.cfg, cd = s.data[cfg], v = cd.v, fos = cd.fos, job = cd.job, C = CC.CONFIGS[cfg];
+    const basis = cd.basis || 'full';
+    const r = CC.calc(cfg, v, fos, basis);
+    const st = r.pass ? STATUS.pass : STATUS.fail;
+    const px = x => 15 + x / r.L * 320;
+    const keys = s.tab === 'vehicle' ? C.vehicle : s.tab === 'masses' ? ['TF', 'TR', 'MF', 'MR'] : s.tab === 'brackets' ? C.brackets : [];
+    const rows = keys.map(k => {
+      const d = CC.DEFS[k], val = v[k] ?? d.min, dp = dec(d.step);
+      const fromPtr = e => { const b = e.currentTarget.getBoundingClientRect(); const t = Math.min(1, Math.max(0, (e.clientX - b.left) / b.width)); this.setVal(k, d.min + t * (d.max - d.min)); };
+      return {
+        key: k, code: k === 'FOH' ? C.fohCode : k, label: d.label, unit: d.unit, step: d.step,
+        display: s.drafts[k] != null ? s.drafts[k] : fmt(val, dp),
+        pct: ((val - d.min) / (d.max - d.min) * 100).toFixed(2) + '%',
+        minStr: fmt(d.min, Math.min(dp, 1)), maxStr: fmt(d.max, Math.min(dp, 1)),
+        onDown: e => { try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {} fromPtr(e); },
+        onMove: e => { if (e.buttons) fromPtr(e); },
+        onInput: e => { const t = e.target.value; this.setState(x => ({ drafts: { ...x.drafts, [k]: t } })); const n = parseFloat(t); if (!isNaN(n) && n >= d.min && n <= d.max) this.patch(c => { c.v[k] = n; }); },
+        onBlur: e => { const n = parseFloat(e.target.value); if (!isNaN(n)) this.setVal(k, n); this.setState(x => { const dr = { ...x.drafts }; delete dr[k]; return { drafts: dr }; }); },
+        dec: () => this.setVal(k, val - d.step), inc: () => this.setVal(k, val + d.step)
+      };
+    });
+    const el = CC.elevation(r, cfg, { W: 350, padX: 15, top: 16, bot: 22 });
+    const isBM = s.chart === 'bm';
+    const ch = CC.chart(r, isBM ? 'bm' : 'sf', 350, 120, 15, 10);
+    const on = '#3FD0FF', onFg = '#04101f';
+    const setJob = k => e => { const val = e.target.value; this.patch(c => { c.job[k] = val; }); };
+    const jf = [['company', 'Company name', 'text', 'Your company'], ['engineer', 'Engineer', 'text', 'Name'], ['customer', 'Customer name', 'text', ''], ['jobNo', 'Job number', 'text', '00000'], ['rev', 'Revision', 'text', '0'], ['date', 'Date', 'date', ''], ['desc', 'Job description', 'text', 'e.g. Tipper'], ['gvm', 'GVM (kg)', 'number', ''], ['gcm', 'GCM (kg)', 'number', '']];
+    return {
+      ready: true,
+      creatorMark: React.createElement('span', { 'data-creator-mark': '1', contentEditable: false, suppressContentEditableWarning: true, style: { display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, font: "600 10.5px 'JetBrains Mono',monospace", letterSpacing: '.04em', color: '#2BEA8A', userSelect: 'none', pointerEvents: 'none' } }, React.createElement('span', { style: { width: 6, height: 6, borderRadius: 3, background: '#2BEA8A' } }), CC.CREATOR.text),
+      basisOpts: [['full', 'Full chassis', 'σ = Bmax / Z'], ['rail', 'Per rail', 'σ = (Bmax/2) / Z']].map(([k, l, sub]) => ({ label: l, sub, bg: basis === k ? 'rgba(63,208,255,.16)' : '#0A1430', border: basis === k ? '#3FD0FF' : 'rgba(120,160,255,.2)', fg: basis === k ? '#F4F7FF' : '#8FA0C8', pick: () => this.patch(c => { c.basis = k; }) })),
+      jobNo: job.jobNo || '—', rev: job.rev || '0',
+      configs: Object.keys(CC.CONFIGS).map(k => ({ label: CC.CONFIGS[k].label, sub: CC.CONFIGS[k].sub, bg: cfg === k ? on : 'transparent', fg: cfg === k ? onFg : '#C9D5F5', pick: () => this.setState({ cfg: k, drafts: {} }) })),
+      tabs: [['job', 'Job'], ['vehicle', 'Vehicle'], ['masses', 'Masses'], ['brackets', 'Brackets'], ['result', 'Result']].map(([k, l]) => ({ label: l, bg: s.tab === k ? '#1d3a7a' : 'transparent', fg: s.tab === k ? '#F4F7FF' : '#8FA0C8', pick: () => this.setState({ tab: k, drafts: {} }) })),
+      isJobTab: s.tab === 'job', isInputTab: ['vehicle', 'masses', 'brackets'].includes(s.tab), isResultTab: s.tab === 'result',
+      showFos: s.tab === 'vehicle', showDerived: s.tab === 'masses',
+      jobFields: jf.map(([k, l, t, ph]) => ({ label: l, type: t, ph, value: job[k] ?? '', onChange: setJob(k) })),
+      loadSample: () => this.setState(x => ({ data: { ...x.data, [x.cfg]: clone(CC.SAMPLES[x.cfg]) }, drafts: {} })),
+      rows,
+      fosOpts: CC.FOS.map(([n, l]) => ({ n, label: l, bg: fos === n ? 'rgba(63,208,255,.16)' : '#0A1430', border: fos === n ? '#3FD0FF' : 'rgba(120,160,255,.2)', fg: fos === n ? '#F4F7FF' : '#8FA0C8', pick: () => this.patch(c => { c.fos = n; }) })),
+      derived: [{ code: 'PF', label: 'Payload, front (MF − TF)', val: fmt(r.PF, 0) + ' kg' }, { code: 'PR', label: 'Payload, rear (MR − TR)', val: fmt(r.PR, 0) + ' kg' }, { code: 'PL', label: 'Uniform distributed load', val: fmt(r.PL, 0) + ' kg' }, { code: 'PL/m', label: 'Over CA + ROH', val: fmt(r.w, 2) + ' kN/m' }],
+      svgLabels: React.createElement('g', null, React.createElement('text', { x: el.bodyTx, y: el.bodyTy, textAnchor: 'end', fill: '#FFB547', style: { font: "600 8px 'JetBrains Mono',monospace" } }, 'UDL ' + fmt(r.PL, 0) + ' kg'), ...el.brackets.map(b => React.createElement('text', { key: b.id, x: b.lx, y: b.ty, textAnchor: 'middle', fill: '#7CF5FF', style: { font: "700 8px 'JetBrains Mono',monospace" } }, b.id))),
+      gaugeLabels: React.createElement('g', null, React.createElement('text', { x: 110, y: 86, textAnchor: 'middle', fill: '#F4F7FF', style: { font: "700 30px 'JetBrains Mono',monospace" } }, fmt(r.stress, 1)), React.createElement('text', { x: 110, y: 106, textAnchor: 'middle', fill: '#8FA0C8', style: { font: "500 11px 'JetBrains Mono',monospace" } }, 'MPa of ' + fmt(r.allow, 1) + ' allowable')),
+      el, ch, chStroke: isBM ? '#3FD0FF' : '#B48CFF', chFill: isBM ? 'rgba(63,208,255,.16)' : 'rgba(180,140,255,.16)',
+      lenStr: fmt(r.L, 2), wStr: fmt(r.w, 1), plStr: fmt(r.PL, 0),
+      chartPeak: isBM ? `Bmax ${fmt(r.Bmax, 1)} kN·m @ ${fmt(r.bm.x, 2)} m` : `Smax ${fmt(Math.abs(r.sf.v), 1)} kN @ ${fmt(r.sf.x, 2)} m`,
+      showBM: () => this.setState({ chart: 'bm' }), showSF: () => this.setState({ chart: 'sf' }),
+      bmBtnBg: isBM ? '#1d3a7a' : 'transparent', bmBtnFg: isBM ? '#F4F7FF' : '#8FA0C8',
+      sfBtnBg: !isBM ? '#1d3a7a' : 'transparent', sfBtnFg: !isBM ? '#F4F7FF' : '#8FA0C8',
+      statusText: r.pass ? 'PASS' : 'FAIL', statusColor: st.c, statusBg: st.bg, statusGlow: st.glow,
+      stressStr: fmt(r.stress, 1), allowStr: fmt(r.allow, 1),
+      utilPct: Math.min(100, r.util * 100).toFixed(1) + '%', gaugeDash: `${Math.min(100, r.util * 100).toFixed(1)} 100`,
+      verdictLine: r.pass ? `${fmt(r.util * 100, 0)}% utilised · ${fmt(r.allow - r.stress, 1)} MPa headroom at FOS ${fos}` : `Over by ${fmt(r.stress - r.allow, 1)} MPa at FOS ${fos}. Add a subframe or liner, or reduce payload.`,
+      stats: [{ label: 'Bending moment, Bmax', val: fmt(r.Bmax, 2), unit: 'kN·m' }, { label: 'Bmax location', val: fmt(r.bm.x, 2), unit: 'm' }, { label: 'Section modulus', val: fmt(v.Z, 0), unit: 'cm³' }, { label: 'Allowable (YS / FOS)', val: `${v.YS}/${fos}`, unit: 'MPa' }, { label: 'Max shear', val: fmt(Math.abs(r.sf.v), 1), unit: 'kN' }, { label: 'Utilisation', val: fmt(r.util * 100, 0), unit: '%' }],
+      reactRows: r.br.map(b => ({ id: b.id, x: fmt(b.x, 3), kn: fmt(b.R, 2) })),
+      saveNow: e => {
+        const st = { cfg: s.cfg, data: s.data };
+        CC.save(st);
+        try { localStorage.setItem('chassisStrength.print', String(Date.now())); } catch (x) {}
+        if (/^(blob|data):/.test(location.protocol) && window.parent !== window) { e.preventDefault(); window.parent.postMessage({ cc: 'openReport', s: JSON.parse(JSON.stringify(st)) }, '*'); }
+      },
+      goResult: () => this.setState({ tab: 'result' })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<template id="__bundler_thumbnail" data-bg-color="#0A1430"><svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#0A1430"/><rect x="120" y="120" width="160" height="160" rx="32" fill="none" stroke="#3FD0FF" stroke-width="12"/><text x="200" y="228" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="72" fill="#2BEA8A">CS</text></svg></template>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0A1430">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chassis">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="chassis-calc.js"></script>
+<script src="./doc-page.js"></script>
+<style>doc-page:not(:defined){visibility:hidden}body{margin:0;font-family:'Space Grotesk',system-ui,sans-serif;color:#0A1430}a{color:#1d4fd8}a:hover{color:#0A1430}@media print{.noprint{display:none!important}}</style>
+</helmet>
+<div class="noprint" style="display:flex;justify-content:center;gap:10px;padding:14px;background:#0A1430">
+  <a href="Chassis Strength App.dc.html" style="display:flex;align-items:center;height:40px;padding:0 16px;border-radius:12px;border:1px solid rgba(120,160,255,.3);color:#C9D5F5;text-decoration:none;font:600 14px 'Space Grotesk',sans-serif">← Back to app</a>
+  <button onClick="{{ print }}" style="cursor:pointer;height:40px;padding:0 18px;border-radius:12px;border:0;background:#3FD0FF;color:#04101f;font:700 14px 'Space Grotesk',sans-serif">Save as PDF</button>
+</div>
+<doc-page size="a4" margin="0">
+  <section class="page" style="box-sizing:border-box;padding:25mm;display:flex;flex-direction:column;gap:2mm;font-size:7.8pt;overflow:hidden">
+    <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding-bottom:2.5mm;border-bottom:2.5px solid #0A1430">
+        <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+          <span style="font:700 10pt 'Space Grotesk',sans-serif;color:#0A1430">{{ companyStr }}</span>
+          <h1 style="margin:0;font:700 18pt/1.1 'Space Grotesk',sans-serif;color:#0A1430">Chassis Strength Calculation</h1>
+          <span style="font:600 8pt 'JetBrains Mono',monospace;letter-spacing:.1em;color:#1d4fd8;text-transform:uppercase">{{ cfgTitle }}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:auto auto;gap:1px 10px;font:500 8.5pt 'JetBrains Mono',monospace;color:#5b6787;text-align:right">
+          <span>Job #</span><strong style="color:#0A1430">{{ job.jobNo }}</strong>
+          <span>Revision</span><strong style="color:#0A1430">{{ job.rev }}</strong>
+          <span>Date</span><strong style="color:#0A1430">{{ dateStr }}</strong>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr 1.2fr;gap:12px">
+        <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:7.5pt;color:#5b6787">Customer</span><span style="font-weight:600">{{ job.customer }}</span></div>
+        <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:7.5pt;color:#5b6787">Job description</span><span style="font-weight:600">{{ job.desc }}</span></div>
+        <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:7.5pt;color:#5b6787">GVM</span><span style="font:600 8.5pt 'JetBrains Mono',monospace">{{ gvmStr }}</span></div>
+        <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:7.5pt;color:#5b6787">GCM</span><span style="font:600 8.5pt 'JetBrains Mono',monospace">{{ gcmStr }}</span></div>
+        <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:7.5pt;color:#5b6787">Engineer</span><span style="font-weight:600">{{ engineerStr }}</span></div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:16px;padding:2.5mm 4mm;border-radius:8px;border:2px solid {{ statusColor }};background:{{ statusBg }}">
+        <span style="font:700 22pt/1 'Space Grotesk',sans-serif;letter-spacing:.05em;color:{{ statusColor }}">{{ statusText }}</span>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px;font-size:9pt">
+          <span style="font-weight:600">Stress @ Bmax {{ stressStr }} MPa against {{ allowStr }} MPa allowable (YS {{ ysStr }} MPa / FOS {{ fos }})</span>
+          <span style="color:#33415f">{{ verdictLine }}</span>
+        </div>
+      </div>
+
+      <div style="border:1px solid #d5dbea;border-radius:8px;padding:2mm 3mm 1mm">
+        <div style="display:flex;justify-content:space-between;font-weight:600;font-size:8.5pt"><span>Side elevation</span><span style="font:500 7.5pt 'JetBrains Mono',monospace;color:#5b6787">{{ wStr }} kN/m over CA + ROH · dimensions in m</span></div>
+        <svg viewBox="{{ el.vb }}" style="width:100%;display:block;max-height:38mm">
+            <sc-for list="{{ el.topDims }}" as="t" hint-placeholder-count="0">
+            <line x1="{{ t.x1 }}" x2="{{ t.x2 }}" y1="{{ t.y }}" y2="{{ t.y }}" stroke="#5b6787" stroke-width="0.8"></line>
+            <line x1="{{ t.x1 }}" x2="{{ t.x1 }}" y1="{{ t.ya }}" y2="{{ t.yb }}" stroke="#5b6787" stroke-width="0.8"></line>
+            <line x1="{{ t.x2 }}" x2="{{ t.x2 }}" y1="{{ t.ya }}" y2="{{ t.yb }}" stroke="#5b6787" stroke-width="0.8"></line>
+            
+          </sc-for>
+            <line x1="{{ el.gx1 }}" x2="{{ el.gx2 }}" y1="{{ el.ground }}" y2="{{ el.ground }}" stroke="#9aa5c0" stroke-width="1"></line>
+            <rect x="{{ el.body.x }}" y="{{ el.body.y }}" width="{{ el.body.w }}" height="{{ el.body.h }}" rx="2" fill="rgba(229,140,20,.06)" stroke="#e58c14" stroke-width="1.1" stroke-dasharray="5 3"></rect>
+            <sc-for list="{{ el.arrows }}" as="a" hint-placeholder-count="0">
+              <path d="{{ a.d }}" stroke="#e58c14" stroke-width="1"></path>
+              <polygon points="{{ a.head }}" fill="#e58c14"></polygon>
+            </sc-for>
+            
+            <rect x="{{ el.subframe.x }}" y="{{ el.subframe.y }}" width="{{ el.subframe.w }}" height="{{ el.subframe.h }}" fill="#5b6787"></rect>
+            <sc-for list="{{ el.tanks }}" as="tk" hint-placeholder-count="0">
+              <rect x="{{ tk.x }}" y="{{ tk.y }}" width="{{ tk.w }}" height="{{ tk.h }}" rx="{{ tk.rx }}" fill="#dde3ef" stroke="#5b6787" stroke-width="1"></rect>
+              <line x1="{{ tk.band1 }}" x2="{{ tk.band1 }}" y1="{{ tk.y1 }}" y2="{{ tk.y2 }}" stroke="#5b6787" stroke-width="1.4"></line>
+              <line x1="{{ tk.band2 }}" x2="{{ tk.band2 }}" y1="{{ tk.y1 }}" y2="{{ tk.y2 }}" stroke="#5b6787" stroke-width="1.4"></line>
+            </sc-for>
+            <rect x="{{ el.rail.x }}" y="{{ el.rail.y }}" width="{{ el.rail.w }}" height="{{ el.rail.h }}" fill="#0A1430"></rect>
+            <path d="{{ el.underrun }}" fill="none" stroke="#33415f" stroke-width="2.4" stroke-linecap="round"></path>
+            <sc-for list="{{ el.brackets }}" as="b" hint-placeholder-count="0">
+              <line x1="{{ b.lx }}" x2="{{ b.lx }}" y1="{{ b.ly1 }}" y2="{{ b.ly2 }}" stroke="#1d4fd8" stroke-width="0.8" stroke-dasharray="2 2"></line>
+              <rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" fill="#1d4fd8"></rect>
+              
+            </sc-for>
+            <sc-for list="{{ el.guards }}" as="g" hint-placeholder-count="0">
+              <path d="{{ g }}" fill="none" stroke="#33415f" stroke-width="2.6" stroke-linejoin="round"></path>
+            </sc-for>
+            <sc-for list="{{ el.wheels }}" as="w" hint-placeholder-count="0">
+              <circle cx="{{ w.cx }}" cy="{{ w.cy }}" r="{{ w.rt }}" fill="#22293d" stroke="#0A1430" stroke-width="1.2"></circle>
+              <circle cx="{{ w.cx }}" cy="{{ w.cy }}" r="{{ w.rr }}" fill="#c9cfdd" stroke="#5b6787" stroke-width="1"></circle>
+              <circle cx="{{ w.cx }}" cy="{{ w.cy }}" r="{{ w.rh }}" fill="#33415f"></circle>
+            </sc-for>
+            <rect x="{{ el.bumper.x }}" y="{{ el.bumper.y }}" width="{{ el.bumper.w }}" height="{{ el.bumper.h }}" rx="2" fill="#5b6787"></rect>
+            <path d="{{ el.cab }}" fill="#eef2fa" stroke="#33415f" stroke-width="1.2" stroke-linejoin="round"></path>
+            <path d="{{ el.door }}" fill="none" stroke="#33415f" stroke-width="0.8" opacity=".7"></path>
+            <path d="{{ el.win }}" fill="#cfd9ee" stroke="#33415f" stroke-width="0.8"></path>
+            <path d="{{ el.screen }}" stroke="#5b6787" stroke-width="3" stroke-linecap="round"></path>
+            <path d="{{ el.beltLine }}" stroke="#33415f" stroke-width="0.7" opacity=".5"></path>
+            <rect x="{{ el.handle.x }}" y="{{ el.handle.y }}" width="{{ el.handle.w }}" height="{{ el.handle.h }}" fill="#33415f"></rect>
+            <rect x="{{ el.lamp.x }}" y="{{ el.lamp.y }}" width="{{ el.lamp.w }}" height="{{ el.lamp.h }}" rx="1" fill="#f5c542"></rect>
+            <path d="{{ el.mirror }}" stroke="#33415f" stroke-width="1.6"></path>
+            <rect x="{{ el.mirrorHead.x }}" y="{{ el.mirrorHead.y }}" width="{{ el.mirrorHead.w }}" height="{{ el.mirrorHead.h }}" rx="1.5" fill="#33415f"></rect>
+            <sc-for list="{{ el.steps }}" as="st" hint-placeholder-count="0">
+              <rect x="{{ st.x }}" y="{{ st.y }}" width="{{ st.w }}" height="{{ st.h }}" fill="#33415f"></rect>
+            </sc-for>
+            <line x1="{{ el.bmX }}" x2="{{ el.bmX }}" y1="{{ el.bmY1 }}" y2="{{ el.bmY2 }}" stroke="{{ statusColor }}" stroke-width="1.2" stroke-dasharray="3 3"></line>
+            {{ svgLabels }}
+            <text x="{{ el.bmX }}" y="{{ el.bmY1 }}" dy="-3" text-anchor="middle" fill="{{ statusColor }}" style="font:700 8px 'JetBrains Mono',monospace">Bmax</text>
+            <sc-for list="{{ el.botDims }}" as="t" hint-placeholder-count="0">
+            <line x1="{{ t.x1 }}" x2="{{ t.x2 }}" y1="{{ t.y }}" y2="{{ t.y }}" stroke="#5b6787" stroke-width="0.8"></line>
+            <line x1="{{ t.x1 }}" x2="{{ t.x1 }}" y1="{{ t.ya }}" y2="{{ t.yb }}" stroke="#5b6787" stroke-width="0.8"></line>
+            <line x1="{{ t.x2 }}" x2="{{ t.x2 }}" y1="{{ t.ya }}" y2="{{ t.yb }}" stroke="#5b6787" stroke-width="0.8"></line>
+            
+          </sc-for>
+            </svg>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3mm">
+        <div style="border:1px solid #d5dbea;border-radius:8px;padding:2mm 3mm 1mm">
+          <div style="display:flex;justify-content:space-between;font-weight:600"><span>Shear force (kN)</span><span style="font:500 7.5pt 'JetBrains Mono',monospace;color:#6b3fd8">Smax {{ smaxStr }}</span></div>
+          <svg viewBox="0 0 320 112" style="width:100%;max-height:21mm;display:block">
+            <line x1="10" x2="310" y1="{{ sf.zero }}" y2="{{ sf.zero }}" stroke="#9aa5c0" stroke-width="1"></line>
+            <polygon points="{{ sf.area }}" fill="rgba(107,63,216,.14)"></polygon>
+            <polyline points="{{ sf.line }}" fill="none" stroke="#6b3fd8" stroke-width="1.5"></polyline>
+            <circle cx="{{ sf.px }}" cy="{{ sf.py }}" r="3" fill="#6b3fd8"></circle>
+          </svg>
+        </div>
+        <div style="border:1px solid #d5dbea;border-radius:8px;padding:2mm 3mm 1mm">
+          <div style="display:flex;justify-content:space-between;font-weight:600"><span>Bending moment (kN·m)</span><span style="font:500 7.5pt 'JetBrains Mono',monospace;color:#1d4fd8">Bmax {{ bmaxStr }}</span></div>
+          <svg viewBox="0 0 320 112" style="width:100%;max-height:21mm;display:block">
+            <line x1="10" x2="310" y1="{{ bm.zero }}" y2="{{ bm.zero }}" stroke="#9aa5c0" stroke-width="1"></line>
+            <polygon points="{{ bm.area }}" fill="rgba(29,79,216,.14)"></polygon>
+            <polyline points="{{ bm.line }}" fill="none" stroke="#1d4fd8" stroke-width="1.5"></polyline>
+            <circle cx="{{ bm.px }}" cy="{{ bm.py }}" r="3" fill="{{ statusColor }}"></circle>
+          </svg>
+        </div>
+      </div>
+      <span style="font-size:7.5pt;color:#5b6787;margin-top:-2mm">Plotted at 100 mm intervals and at each reaction point. x = 0 at front of chassis, L = {{ lenStr }} m. Bending moment at end of chassis set to 0.</span>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:4mm;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:1.5mm">
+          <span style="font:700 9.5pt 'Space Grotesk',sans-serif">Inputs</span>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:3mm">
+            <sc-for list="{{ inputs }}" as="i" hint-placeholder-count="16">
+              <div style="display:flex;align-items:baseline;gap:6px;padding:1.6px 0;border-bottom:1px solid #e9ecf4">
+                <span style="flex:none;width:22px;font:700 6.5pt 'JetBrains Mono',monospace;color:#1d4fd8">{{ i.code }}</span>
+                <span style="flex:1;min-width:0;font-size:6.5pt;color:#33415f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ i.label }}</span>
+                <span style="flex:none;font:600 6.8pt 'JetBrains Mono',monospace">{{ i.val }}</span>
+                <span style="flex:none;width:20px;font-size:6pt;color:#5b6787">{{ i.unit }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1.5mm">
+          <span style="font:700 9.5pt 'Space Grotesk',sans-serif">Reaction forces &amp; maxima</span>
+          <table style="width:100%;table-layout:fixed;border-collapse:collapse;font-size:7.2pt">
+            <thead><tr style="background:#0A1430;color:#fff">
+              <th style="text-align:left;padding:3px 3px">Point</th><th style="text-align:right;padding:3px 3px">x (m)</th><th style="text-align:right;padding:3px 3px">R (kN)</th><th style="text-align:right;padding:3px 3px">S (kN)</th><th style="text-align:right;padding:3px 3px">M (kN·m)</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ plot }}" as="p" hint-placeholder-count="6">
+                <tr style="border-bottom:1px solid #e3e7f1;background:{{ p.bg }};font-weight:{{ p.fw }}">
+                  <td style="padding:2px 3px;color:{{ p.col }}">{{ p.label }}</td><td style="padding:2px 3px;text-align:right;font-family:'JetBrains Mono',monospace">{{ p.x }}</td><td style="padding:2px 3px;text-align:right;font-family:'JetBrains Mono',monospace">{{ p.r }}</td><td style="padding:2px 3px;text-align:right;font-family:'JetBrains Mono',monospace">{{ p.s }}</td><td style="padding:2px 3px;text-align:right;font-family:'JetBrains Mono',monospace">{{ p.m }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="display:flex;flex-direction:column;margin-top:1mm">
+            <sc-for list="{{ check }}" as="c" hint-placeholder-count="4">
+              <div style="display:flex;justify-content:space-between;gap:8px;padding:2px 0;border-bottom:1px solid #e9ecf4;font-size:8pt"><span style="color:#33415f">{{ c.label }}</span><span style="font:600 8pt 'JetBrains Mono',monospace;white-space:nowrap">{{ c.val }}</span></div>
+            </sc-for>
+            <div style="display:flex;justify-content:space-between;padding:3px 0;font-weight:700;font-size:9pt"><span>Conclusion</span><span style="color:{{ statusColor }}">{{ statusText }}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:10mm;padding-top:4mm">
+        <div style="display:flex;flex-direction:column;gap:2px;border-top:1px solid #0A1430;padding-top:4px"><span style="font-weight:600">{{ engineerStr }}</span><span style="font-size:7.5pt;color:#5b6787">Engineer · {{ companyStr }}</span></div>
+        <div style="display:flex;flex-direction:column;gap:2px;border-top:1px solid #0A1430;padding-top:4px"><span style="font-weight:600">Signature / date</span>{{ creatorMark }}<span style="font-size:7.5pt;color:#5b6787">FOS: 5 tippers / off-road · 4 minimum · 3 normal use</span></div>
+      </div>
+    </sc-if>
+  </section>
+</doc-page>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { ready: false, cfg: 'spring', cd: null };
+  componentDidMount() {
+    const boot = () => {
+      const CC = window.ChassisCalc;
+      if (!CC) { this._t = setTimeout(boot, 40); return; }
+      const saved = CC.load();
+      const cfg = (saved && saved.cfg) || 'spring';
+      const cd = (saved && saved.data && saved.data[cfg]) || JSON.parse(JSON.stringify(CC.SAMPLES[cfg]));
+      this.setState({ ready: true, cfg, cd }, () => {
+        let flag = 0; try { flag = +localStorage.getItem('chassisStrength.print') || 0; } catch (e) {}
+        if (flag && Date.now() - flag < 15000 && window.parent === window) { try { localStorage.removeItem('chassisStrength.print'); } catch (e) {} this._p = setTimeout(() => window.print(), 900); }
+      });
+    };
+    boot();
+    this._onMsg = e => {
+      const m = e.data; if (!m || m.cc !== 'state' || !m.s || !window.ChassisCalc) return;
+      window.__ccState = m.s;
+      const cfg = m.s.cfg, cd = m.s.data && m.s.data[cfg]; if (!cd) return;
+      this.setState({ ready: true, cfg, cd }, () => { if (m.print) { clearTimeout(this._p); this._p = setTimeout(() => window.print(), 900); } });
+    };
+    window.addEventListener('message', this._onMsg);
+    const host = window.opener || (window.parent !== window ? window.parent : null);
+    if (host) try { host.postMessage({ cc: 'need' }, '*'); } catch (e) {}
+  }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._p); window.removeEventListener('message', this._onMsg); }
+  renderVals() {
+    const CC = window.ChassisCalc, s = this.state;
+    const print = () => window.print();
+    if (!s.ready || !CC) return { ready: false, print };
+    const fmt = CC.fmt, cfg = s.cfg, { v, fos, job } = s.cd, C = CC.CONFIGS[cfg];
+    const basis = s.cd.basis || 'full';
+    const r = CC.calc(cfg, v, fos, basis);
+    const kg = x => Math.round(x).toLocaleString('en-AU');
+    const num = x => (x === '' || x == null || isNaN(+x)) ? '—' : (+x).toLocaleString('en-AU') + ' kg';
+    const short = { WB: 'Wheelbase', J: 'Steer axle spacing', FOH: 'Front overhang', CA: 'Back of cab to rear axle', ROH: 'Rear overhang', TF: 'Tare, front', TR: 'Tare, rear', MF: 'Max allowable, front', MR: 'Max allowable, rear', A: 'Front axle → front hanger', B: 'Front axle → rear hanger', H: '2nd steer → front hanger', I: '2nd steer → rear hanger', C: 'Rear axle → hanger (fwd)', D: cfg === 'spring' ? 'Rear axle → rear hanger' : 'Rear axle → hanger (fwd 2)', E: 'Rear axle → hanger (aft)', F: 'Rear axle → hanger (aft 2)' };
+    const inputs = [];
+    const add = (code, label, val, unit) => inputs.push({ code, label, val, unit });
+    C.vehicle.filter(k => k !== 'YS' && k !== 'Z').forEach(k => add(k === 'FOH' ? C.fohCode : k, short[k], fmt(v[k], 3), 'm'));
+    if (cfg === 'twin') add('K', '2nd steer → rear group', fmt(v.WB - v.J, 3), 'm');
+    ['TF', 'TR', 'MF', 'MR'].forEach(k => add(k, short[k], kg(v[k]), 'kg'));
+    add('PF', 'Payload, front (MF − TF)', kg(r.PF), 'kg');
+    add('PR', 'Payload, rear (MR − TR)', kg(r.PR), 'kg');
+    add('PL', 'UDL (PF + PR)', kg(r.PL), 'kg');
+    add('PL/m', 'PL / (CA + ROH)', fmt(r.w, 2), 'kN/m');
+    C.brackets.forEach(k => add(k, short[k], fmt(v[k], 3), 'm'));
+    add('YS', 'Rail yield stress', fmt(v.YS, 0), 'MPa');
+    add('Z', 'Section modulus @ Bmax', fmt(v.Z, 0), 'cm³');
+
+    const el = CC.elevation(r, cfg, { W: 700, padX: 20, maxK: 44, top: 30, bot: r.ax2 ? 60 : 44 });
+    const f1 = n => n.toFixed(1), gy = +el.ground;
+    const dim = (a, b, label, y, up) => ({ x1: f1(el.X(a)), x2: f1(el.X(b)), tx: f1((el.X(a) + el.X(b)) / 2), label, y: f1(y), ya: f1(y - 5), yb: f1(y + 5), ty: f1(y - 4) });
+    const by = gy + 34;
+    const botDims = [dim(0, r.ax1, `${C.fohCode} ${fmt(v.FOH, 3)}`, by)];
+    if (r.ax2) botDims.push(dim(r.ax1, r.ax2, `J ${fmt(v.J, 3)}`, by), dim(r.ax2, r.RA, `K ${fmt(v.WB - v.J, 3)}`, by));
+    else botDims.push(dim(r.ax1, r.RA, `WB ${fmt(v.WB, 3)}`, by));
+    botDims.push(dim(r.RA, r.L, `ROH ${fmt(v.ROH, 3)}`, by));
+    el.topDims = [dim(r.xs, r.RA, `CA ${fmt(v.CA, 3)}`, 14)];
+    if (r.ax2) botDims.push(dim(r.ax1, r.RA, `WB ${fmt(v.WB, 3)}`, by + 17));
+    el.botDims = botDims;
+    const bm = CC.chart(r, 'bm', 320, 112, 10, 8), sf = CC.chart(r, 'sf', 320, 112, 10, 8);
+    const st = r.pass ? { c: '#0f9d58', bg: 'rgba(15,157,88,.08)' } : { c: '#d93040', bg: 'rgba(217,48,64,.08)' };
+    let dateStr = job.date || '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) { const [y, m, d] = dateStr.split('-'); dateStr = `${d}/${m}/${y}`; }
+    return {
+      creatorMark: React.createElement('span', { 'data-creator-mark': '1', contentEditable: false, suppressContentEditableWarning: true, style: { font: "600 7pt 'JetBrains Mono',monospace", color: '#1d4fd8', userSelect: 'none', pointerEvents: 'none' } }, CC.CREATOR.text),
+      ready: true, print, job, dateStr, cfgTitle: C.title, fos,
+      companyStr: job.company || 'Company name', engineerStr: job.engineer || 'Engineer name',
+      gvmStr: num(job.gvm), gcmStr: num(job.gcm), ysStr: fmt(v.YS, 0),
+      statusText: r.pass ? 'PASS' : 'FAIL', statusColor: st.c, statusBg: st.bg,
+      stressStr: fmt(r.stress, 1), allowStr: fmt(r.allow, 2),
+      verdictLine: r.pass ? `Utilisation ${fmt(r.util * 100, 0)}%. Chassis rails are adequate for the nominated payload.` : `Utilisation ${fmt(r.util * 100, 0)}%. Chassis rails are not adequate; reinforcement or subframe required.`,
+      svgLabels: React.createElement('g', null,
+        React.createElement('text', { x: el.bodyTx, y: el.bodyTy, textAnchor: 'end', fill: '#e58c14', style: { font: "600 8px 'JetBrains Mono',monospace" } }, 'UDL ' + kg(r.PL) + ' kg'),
+        ...el.brackets.map(b => React.createElement('text', { key: 'b' + b.id, x: b.lx, y: b.ty, textAnchor: 'middle', fill: '#1d4fd8', style: { font: "700 8px 'JetBrains Mono',monospace" } }, b.id)),
+        ...el.topDims.concat(el.botDims).map((t, i) => React.createElement('text', { key: 'd' + i, x: t.tx, y: t.ty, textAnchor: 'middle', fill: '#33415f', style: { font: "600 9px 'JetBrains Mono',monospace" } }, t.label))),
+      plStr: kg(r.PL), wStr: fmt(r.w, 2), lenStr: fmt(r.L, 3), el,
+      inputs, bm, sf,
+      bmaxStr: fmt(r.Bmax, 2) + ' @ ' + fmt(r.bm.x, 2) + ' m', smaxStr: fmt(Math.abs(r.sf.v), 2) + ' @ ' + fmt(r.sf.x, 2) + ' m',
+      plot: r.table.map(p => ({ label: p.label, x: fmt(p.x, 3), r: p.R != null ? fmt(p.R, 2) : '—', s: fmt(p.s, 2), m: fmt(p.m, 2), bg: p.peak ? '#eef3ff' : 'transparent', fw: p.peak ? 700 : 400, col: p.peak ? '#0A1430' : '#1d4fd8' })),
+      check: [
+        { label: 'Bmax +ve / −ve', val: `${fmt(r.bmPos.m, 2)} / ${fmt(r.bmNeg.m, 2)} kN·m` },
+        { label: 'Section modulus, Z', val: (v.Z / 1e6).toExponential(3) + ' m³' },
+        { label: basis === 'rail' ? 'Stress @ Bmax ((Bmax/2) / Z, per rail)' : 'Stress @ Bmax (Bmax / Z, full chassis)', val: fmt(r.stress, 1) + ' MPa' },
+        { label: `Allowable (YS / FOS ${fos})`, val: fmt(r.allow, 2) + ' MPa' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
