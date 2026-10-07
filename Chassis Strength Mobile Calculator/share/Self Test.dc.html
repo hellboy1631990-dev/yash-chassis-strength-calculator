@@ -119,15 +119,16 @@ class Component extends DCLogic {
   excel(cases) {
     const CC = window.ChassisCalc, fmt = CC.fmt;
     return cases.map(c => {
-      const r = CC.calc(c.cfg, c.v, c.fos, c.basis);
+      const r = CC.calc(c.cfg, c.v, c.fos);
       const sb = Math.max(Math.abs(c.sheet.bpos), Math.abs(c.sheet.bneg));
       const d = (r.Bmax - sb) / sb * 100, ok = Math.abs(d) <= 2;
       let note = ok ? 'Match' : '';
       if (!ok && c.cfg === 'twin') note = 'Sheet template places E/F from D (geometry error)';
       else if (!ok) note = 'App finds peak between sheet sample points';
-      if (ok && Math.abs(r.stress - c.sheet.stress) > 0.5) note = 'Bmax match; sheet stress used +ve peak only';
+      if (ok && c.basis === 'rail') note = 'Bmax match; sheet error: Bmax ÷2 per rail';
+      else if (ok && Math.abs(r.stress - c.sheet.stress) > 0.5) note = 'Bmax match; sheet stress used +ve peak only';
       const sheetPass = /pass/i.test(c.sheet.result);
-      return { job: c.job, setup: CC.CONFIGS[c.cfg].label + ' · ' + (c.basis === 'rail' ? 'per rail' : 'full'), sb: fmt(sb, 2), ab: fmt(r.Bmax, 2), d: (d >= 0 ? '+' : '') + fmt(d, 1) + '%', dcol: ok ? OK : (Math.abs(d) <= 5 ? WARN : BAD), ss: fmt(c.sheet.stress, 1), as: fmt(r.stress, 1), res: (r.pass ? 'PASS' : 'FAIL') + (r.pass === sheetPass ? '' : ' ≠ sheet'), rcol: r.pass === sheetPass ? (r.pass ? OK : BAD) : WARN, note, _ok: ok || /stress used/.test(note) };
+      return { job: c.job, setup: CC.CONFIGS[c.cfg].label, sb: fmt(sb, 2), ab: fmt(r.Bmax, 2), d: (d >= 0 ? '+' : '') + fmt(d, 1) + '%', dcol: ok ? OK : (Math.abs(d) <= 5 ? WARN : BAD), ss: fmt(c.sheet.stress, 1), as: fmt(r.stress, 1), res: (r.pass ? 'PASS' : 'FAIL') + (r.pass === sheetPass ? '' : ' ≠ sheet'), rcol: r.pass === sheetPass ? (r.pass ? OK : BAD) : WARN, note, _ok: ok };
     });
   }
   scenarios() {
@@ -181,7 +182,7 @@ class Component extends DCLogic {
     // PDF envelope
     const rw = this.repRef.current.contentWindow, pdf = [];
     for (const cfg of ['spring', 'airbag', 'twin']) {
-      rw.postMessage({ cc: 'state', s: { cfg, data: { [cfg]: base[cfg] } } }, '*'); await sleep(700);
+      rw.postMessage({ cc: 'state', s: { cfg, data: { [cfg]: base[cfg] } } }, (/^https?:$/.test(location.protocol) ? location.origin : '*')); await sleep(700);
       const s = rw.document.querySelector('section.page'); if (!s) continue;
       const sr = s.getBoundingClientRect(), mm = sr.width / 210; let b = { l: 1e9, t: 1e9, r: -1e9, bt: -1e9 };
       s.querySelectorAll('*').forEach(e => { const r = e.getBoundingClientRect(); if (r.width && r.height) { b.l = Math.min(b.l, r.left); b.t = Math.min(b.t, r.top); b.r = Math.max(b.r, r.right); b.bt = Math.max(b.bt, r.bottom); } });

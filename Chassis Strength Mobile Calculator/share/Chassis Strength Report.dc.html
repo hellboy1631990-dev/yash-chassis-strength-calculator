@@ -204,14 +204,14 @@ class Component extends DCLogic {
     };
     boot();
     this._onMsg = e => {
-      const m = e.data; if (!m || m.cc !== 'state' || !m.s || !window.ChassisCalc) return;
+      if (/^https?:$/.test(location.protocol) && e.origin !== location.origin) return; const m = e.data; if (!m || m.cc !== 'state' || !m.s || !window.ChassisCalc) return;
       window.__ccState = m.s;
       const cfg = m.s.cfg, cd = m.s.data && m.s.data[cfg]; if (!cd) return;
       this.setState({ ready: true, cfg, cd }, () => { if (m.print) { clearTimeout(this._p); this._p = setTimeout(() => window.print(), 900); } });
     };
     window.addEventListener('message', this._onMsg);
     const host = window.opener || (window.parent !== window ? window.parent : null);
-    if (host) try { host.postMessage({ cc: 'need' }, '*'); } catch (e) {}
+    if (host) try { host.postMessage({ cc: 'need' }, (/^https?:$/.test(location.protocol) ? location.origin : '*')); } catch (e) {}
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._p); window.removeEventListener('message', this._onMsg); }
   renderVals() {
@@ -219,8 +219,7 @@ class Component extends DCLogic {
     const print = () => window.print();
     if (!s.ready || !CC) return { ready: false, print };
     const fmt = CC.fmt, cfg = s.cfg, { v, fos, job } = s.cd, C = CC.CONFIGS[cfg];
-    const basis = s.cd.basis || 'full';
-    const r = CC.calc(cfg, v, fos, basis);
+    const r = CC.calc(cfg, v, fos);
     const kg = x => Math.round(x).toLocaleString('en-AU');
     const num = x => (x === '' || x == null || isNaN(+x)) ? '—' : (+x).toLocaleString('en-AU') + ' kg';
     const short = { WB: 'Wheelbase', J: 'Steer axle spacing', FOH: 'Front overhang', CA: 'Back of cab to rear axle', ROH: 'Rear overhang', TF: 'Tare, front', TR: 'Tare, rear', MF: 'Max allowable, front', MR: 'Max allowable, rear', A: 'Front axle → front hanger', B: 'Front axle → rear hanger', H: '2nd steer → front hanger', I: '2nd steer → rear hanger', C: 'Rear axle → hanger (fwd)', D: cfg === 'spring' ? 'Rear axle → rear hanger' : 'Rear axle → hanger (fwd 2)', E: 'Rear axle → hanger (aft)', F: 'Rear axle → hanger (aft 2)' };
@@ -271,7 +270,7 @@ class Component extends DCLogic {
       check: [
         { label: 'Bmax +ve / −ve', val: `${fmt(r.bmPos.m, 2)} / ${fmt(r.bmNeg.m, 2)} kN·m` },
         { label: 'Section modulus, Z', val: (v.Z / 1e6).toExponential(3) + ' m³' },
-        { label: basis === 'rail' ? 'Stress @ Bmax ((Bmax/2) / Z, per rail)' : 'Stress @ Bmax (Bmax / Z, full chassis)', val: fmt(r.stress, 1) + ' MPa' },
+        { label: 'Stress @ Bmax (Bmax / Z, full chassis)', val: fmt(r.stress, 1) + ' MPa' },
         { label: `Allowable (YS / FOS ${fos})`, val: fmt(r.allow, 2) + ' MPa' }
       ]
     };

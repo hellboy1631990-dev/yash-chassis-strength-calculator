@@ -167,20 +167,6 @@
             </sc-for>
 
             <sc-if value="{{ showFos }}" hint-placeholder-val="{{ false }}">
-              <div style="border-radius:16px;background:#101E44;border:1px solid rgba(120,160,255,.12);padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;margin-bottom:10px">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <span style="flex:none;min-width:34px;text-align:center;padding:3px 6px;border-radius:6px;background:rgba(63,208,255,.12);color:#3FD0FF;font:700 10.5px 'JetBrains Mono',monospace">Z</span>
-                  <span style="flex:1;font:500 13px 'Space Grotesk',sans-serif;color:#DCE4FA">Section modulus basis</span>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-                  <sc-for list="{{ basisOpts }}" as="bo" hint-placeholder-count="2">
-                    <button onClick="{{ bo.pick }}" style="cursor:pointer;padding:9px 4px;border-radius:10px;border:1px solid {{ bo.border }};background:{{ bo.bg }};color:{{ bo.fg }};display:flex;flex-direction:column;align-items:center;gap:2px">
-                      <span style="font:700 13px 'Space Grotesk',sans-serif">{{ bo.label }}</span>
-                      <span style="font:500 10px 'JetBrains Mono',monospace;opacity:.8">{{ bo.sub }}</span>
-                    </button>
-                  </sc-for>
-                </div>
-              </div>
               <div style="border-radius:16px;background:#101E44;border:1px solid rgba(120,160,255,.12);padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px">
                 <div style="display:flex;align-items:center;gap:10px">
                   <span style="flex:none;min-width:34px;text-align:center;padding:3px 6px;border-radius:6px;background:rgba(63,208,255,.12);color:#3FD0FF;font:700 10.5px 'JetBrains Mono',monospace">FOS</span>
@@ -307,8 +293,7 @@ class Component extends DCLogic {
     const CC = window.ChassisCalc, s = this.state;
     if (!s.ready || !CC) return { ready: false };
     const fmt = CC.fmt, cfg = s.cfg, cd = s.data[cfg], v = cd.v, fos = cd.fos, job = cd.job, C = CC.CONFIGS[cfg];
-    const basis = cd.basis || 'full';
-    const r = CC.calc(cfg, v, fos, basis);
+    const r = CC.calc(cfg, v, fos);
     const st = r.pass ? STATUS.pass : STATUS.fail;
     const px = x => 15 + x / r.L * 320;
     const keys = s.tab === 'vehicle' ? C.vehicle : s.tab === 'masses' ? ['TF', 'TR', 'MF', 'MR'] : s.tab === 'brackets' ? C.brackets : [];
@@ -336,7 +321,6 @@ class Component extends DCLogic {
     return {
       ready: true,
       creatorMark: React.createElement('span', { 'data-creator-mark': '1', contentEditable: false, suppressContentEditableWarning: true, style: { display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, font: "600 10.5px 'JetBrains Mono',monospace", letterSpacing: '.04em', color: '#2BEA8A', userSelect: 'none', pointerEvents: 'none' } }, React.createElement('span', { style: { width: 6, height: 6, borderRadius: 3, background: '#2BEA8A' } }), CC.CREATOR.text),
-      basisOpts: [['full', 'Full chassis', 'σ = Bmax / Z'], ['rail', 'Per rail', 'σ = (Bmax/2) / Z']].map(([k, l, sub]) => ({ label: l, sub, bg: basis === k ? 'rgba(63,208,255,.16)' : '#0A1430', border: basis === k ? '#3FD0FF' : 'rgba(120,160,255,.2)', fg: basis === k ? '#F4F7FF' : '#8FA0C8', pick: () => this.patch(c => { c.basis = k; }) })),
       jobNo: job.jobNo || '—', rev: job.rev || '0',
       configs: Object.keys(CC.CONFIGS).map(k => ({ label: CC.CONFIGS[k].label, sub: CC.CONFIGS[k].sub, bg: cfg === k ? on : 'transparent', fg: cfg === k ? onFg : '#C9D5F5', pick: () => this.setState({ cfg: k, drafts: {} }) })),
       tabs: [['job', 'Job'], ['vehicle', 'Vehicle'], ['masses', 'Masses'], ['brackets', 'Brackets'], ['result', 'Result']].map(([k, l]) => ({ label: l, bg: s.tab === k ? '#1d3a7a' : 'transparent', fg: s.tab === k ? '#F4F7FF' : '#8FA0C8', pick: () => this.setState({ tab: k, drafts: {} }) })),
