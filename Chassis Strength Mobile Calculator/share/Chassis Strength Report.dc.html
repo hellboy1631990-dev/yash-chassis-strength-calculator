@@ -204,14 +204,14 @@ class Component extends DCLogic {
     };
     boot();
     this._onMsg = e => {
-      const m = e.data; if (!m || m.cc !== 'state' || !m.s || !window.ChassisCalc) return;
+      if (/^https?:$/.test(location.protocol) && e.origin !== location.origin) return; const m = e.data; if (!m || m.cc !== 'state' || !m.s || !window.ChassisCalc) return;
       window.__ccState = m.s;
       const cfg = m.s.cfg, cd = m.s.data && m.s.data[cfg]; if (!cd) return;
       this.setState({ ready: true, cfg, cd }, () => { if (m.print) { clearTimeout(this._p); this._p = setTimeout(() => window.print(), 900); } });
     };
     window.addEventListener('message', this._onMsg);
     const host = window.opener || (window.parent !== window ? window.parent : null);
-    if (host) try { host.postMessage({ cc: 'need' }, '*'); } catch (e) {}
+    if (host) try { host.postMessage({ cc: 'need' }, (/^https?:$/.test(location.protocol) ? location.origin : '*')); } catch (e) {}
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._p); window.removeEventListener('message', this._onMsg); }
   renderVals() {
