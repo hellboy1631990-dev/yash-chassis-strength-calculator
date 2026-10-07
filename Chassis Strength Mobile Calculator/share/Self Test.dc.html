@@ -181,7 +181,7 @@ class Component extends DCLogic {
     // PDF envelope
     const rw = this.repRef.current.contentWindow, pdf = [];
     for (const cfg of ['spring', 'airbag', 'twin']) {
-      rw.postMessage({ cc: 'state', s: { cfg, data: { [cfg]: base[cfg] } } }, '*'); await sleep(700);
+      rw.postMessage({ cc: 'state', s: { cfg, data: { [cfg]: base[cfg] } } }, (/^https?:$/.test(location.protocol) ? location.origin : '*')); await sleep(700);
       const s = rw.document.querySelector('section.page'); if (!s) continue;
       const sr = s.getBoundingClientRect(), mm = sr.width / 210; let b = { l: 1e9, t: 1e9, r: -1e9, bt: -1e9 };
       s.querySelectorAll('*').forEach(e => { const r = e.getBoundingClientRect(); if (r.width && r.height) { b.l = Math.min(b.l, r.left); b.t = Math.min(b.t, r.top); b.r = Math.max(b.r, r.right); b.bt = Math.max(b.bt, r.bottom); } });

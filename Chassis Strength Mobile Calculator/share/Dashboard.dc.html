@@ -80,9 +80,9 @@ class Component extends DCLogic {
     const boot = () => { if (!window.ChassisCalc) { this._t = setTimeout(boot, 40); return; } this.setState({ ready: true }); };
     boot();
     this._onMsg = e => {
-      const m = e.data; if (!m || !m.cc) return;
+      if (/^https?:$/.test(location.protocol) && e.origin !== location.origin) return; const m = e.data; if (!m || !m.cc) return;
       if (m.cc === 'state') { window.__ccState = m.s; clearTimeout(this._r); this._r = setTimeout(() => { this.reloadReport(); this.forceUpdate(); }, 350); }
-      else if (m.cc === 'need' && e.source) { const CC = window.ChassisCalc; e.source.postMessage({ cc: 'state', s: window.__ccState || (CC && CC.load()), print: e.source === this._printWin }, '*'); }
+      else if (m.cc === 'need' && e.source) { const CC = window.ChassisCalc; e.source.postMessage({ cc: 'state', s: window.__ccState || (CC && CC.load()), print: e.source === this._printWin }, (/^https?:$/.test(location.protocol) ? location.origin : '*')); }
       else if (m.cc === 'openReport') { window.__ccState = m.s; this._printWin = window.open(this.reportUrl(), '_blank'); }
     };
     window.addEventListener('message', this._onMsg);

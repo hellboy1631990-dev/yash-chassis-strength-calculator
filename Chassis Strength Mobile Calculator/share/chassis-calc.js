@@ -27,11 +27,11 @@
     twin: { label: 'Twin Steer', sub: 'Tandem bag', title: 'TWIN STEER-TANDEM AIRBAG', vehicle: ['WB', 'J', 'FOH', 'CA', 'ROH', 'YS', 'Z'], brackets: ['A', 'B', 'H', 'I', 'C', 'D', 'E', 'F'], fohCode: 'G' }
   };
   const SAMPLES = {
-    spring: { basis: 'full', job: { company: '', engineer: '', customer: 'Barossa Council', jobNo: '36830', rev: '0', date: '2026-07-09', desc: '3 Way Tipper', gvm: '7500', gcm: '11000' }, fos: 3,
+    spring: { basis: 'full', job: { company: '', engineer: '', customer: 'Sample Customer A', jobNo: 'DEMO-01', rev: '0', date: '2026-07-09', desc: '3 Way Tipper', gvm: '7500', gcm: '11000' }, fos: 3,
       v: { WB: 3.85, FOH: 1.09, CA: 2.25, ROH: 1.105, YS: 350, Z: 245, TF: 1775, TR: 2675, MF: 3000, MR: 4500, A: 0.575, B: 0.553, C: 0.605, D: 0.61 } },
-    airbag: { basis: 'full', job: { company: '', engineer: '', customer: 'Swinglehurst Motorsport', jobNo: '36962', rev: '0', date: '2026-07-16', desc: 'Pantech', gvm: '28500', gcm: '70000' }, fos: 4,
+    airbag: { basis: 'full', job: { company: '', engineer: '', customer: 'Sample Customer B', jobNo: 'DEMO-02', rev: '0', date: '2026-07-16', desc: 'Pantech', gvm: '28500', gcm: '70000' }, fos: 4,
       v: { WB: 6.685, FOH: 1.275, CA: 5.6, ROH: 3.35, YS: 550, Z: 857, TF: 5700, TR: 3820, MF: 7000, MR: 16500, A: 0.87, B: 0.82, C: 1.15, D: 0.35, E: 0.35, F: 1.1 } },
-    twin: { basis: 'full', job: { company: '', engineer: '', customer: 'ACT Hire', jobNo: '37344', rev: '0', date: '2026-07-31', desc: 'Beavertail Tray', gvm: '32000', gcm: '55000' }, fos: 4,
+    twin: { basis: 'full', job: { company: '', engineer: '', customer: 'Sample Customer C', jobNo: 'DEMO-03', rev: '0', date: '2026-07-31', desc: 'Beavertail Tray', gvm: '32000', gcm: '55000' }, fos: 4,
       v: { WB: 6.385, J: 1.8, FOH: 1.275, CA: 5.6, ROH: 3.15, YS: 500, Z: 590, TF: 5850, TR: 3600, MF: 11000, MR: 16500, A: 0.867, B: 0.66, H: 0.875, I: 0.47, C: 1.15, D: 0.35, E: 0.35, F: 1.15 } }
   };
   const FOS = [[3, 'Normal use'], [4, 'Minimum'], [5, 'Tippers / off-road']];
@@ -150,7 +150,7 @@
   function save(s) {
     window.__ccState = s;
     try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
-    try { if (window.parent !== window) window.parent.postMessage({ cc: 'state', s: JSON.parse(JSON.stringify(s)) }, '*'); } catch (e) {}
+    try { if (window.parent !== window) window.parent.postMessage({ cc: 'state', s: JSON.parse(JSON.stringify(s)) }, (/^https?:$/.test(location.protocol) ? location.origin : '*')); } catch (e) {}
   }
   function fmt(n, d) { const p = Math.pow(10, d); return (Math.round(n * p) / p).toFixed(d); }
 
